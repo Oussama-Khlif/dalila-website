@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="my-4 text-center">{{ painting.name }}</h1>
+    <div class="row">
+        <!-- Image Section -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <!-- Lightbox trigger with adjusted image styling -->
+                <a href="{{ painting.photo.url }}" data-lightbox="painting-{{ painting.id }}" data-title="{{ painting.name }}" style="display: block;">
+                    <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" class="img-fluid rounded" style="width: 100%; max-height: 350px; object-fit: cover;">
+                </a>
+            </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                    <h4 class="card-title">Détails</h4>
+                    <p class="card-text"><strong>Prix :</strong> {{ painting.price }} DT</p>
+                    <p class="card-text"><strong>Date :</strong> {{ painting.date }}</p>
+                    <p class="card-text"><strong>Emplacement :</strong> {{ painting.location }}</p>
+                    <p class="card-text"><strong>Numéro de Téléphone :</strong> {{ painting.phone_number }}</p>
+                    <p class="card-text"><strong>Dimensions :</strong> {{ painting.height }} x {{ painting.width }} cm</p>
+                    <p class="card-text"><strong>Technique :</strong> {{ painting.technique|default:"Non spécifié" }}</p>
+                    <p class="card-text"><strong>Téléchargé par :</strong> {{ painting.user.username }}</p>
+
+                    <!-- Delete button visible only to superusers -->
+                    {% if user.is_superuser %}
+                    <form id="delete-form-{{ painting.id }}" action="{% url 'delete_painting' painting.id %}" method="POST" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-danger btn-sm d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; padding: 0; margin: 0 auto;" onclick="confirmDelete({{ painting.id }})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(paintingId) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce tableau ?')) {
+            document.getElementById('delete-form-' + paintingId).submit();
+        }
+    }
+</script>
+
+{% endblock %}

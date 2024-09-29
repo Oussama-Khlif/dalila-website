@@ -1,0 +1,238 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromarium Cultural Center</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+        /* Custom styles for the terms popup */
+        #termsPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        #termsPopup .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        #termsPopup .content {
+            margin-top: 20px;
+        }
+
+        #termsPopup .buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        #termsPopup button {
+            margin-left: 10px;
+        }
+
+        #termsPopup ul {
+            padding-left: 20px;
+        }
+
+        #termsPopup ul li {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #termsPopup {
+                width: 95%;
+                max-height: 80%;
+                padding: 15px;
+            }
+
+            #termsPopup .buttons {
+                text-align: center;
+            }
+
+            #termsPopup button {
+                margin: 5px;
+                width: 100%;
+            }
+        }
+
+        /* Cookie Consent Popup Styles */
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .cookie-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body style="background-image: url('{% static 'images/bg.png' %}'); background-size: cover; background-repeat: no-repeat; background-position: center; padding-top: 100px;" >
+    {% include 'parts/navbar.html' %}
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Terms and Conditions Popup -->
+    <div id="termsPopup">
+        <span class="close-btn">&times;</span>
+        <h5>Conditions Générales</h5>
+        <div class="content">
+            <h6>Bienvenue au Centre Culturel Chromarium</h6>
+            <p>En utilisant nos services, vous acceptez les termes et conditions suivants :</p>
+            <ul style="list-style-type: none; padding: 0;">
+                <li><strong>Acceptation des Termes :</strong> En accédant à ou en utilisant le site web et les services du Centre Culturel Chromarium, vous acceptez d'être lié par ces Conditions Générales.</li>
+                <li><strong>Utilisation des Services :</strong> Nos services sont destinés à un usage personnel et non commercial. Vous vous engagez à ne pas utiliser abusivement le contenu ou les services fournis.</li>
+                <li><strong>Propriété Intellectuelle :</strong> Tout le contenu de ce site, y compris les textes, graphiques, logos et images, est la propriété du Centre Culturel Chromarium et est protégé par les lois sur les droits d'auteur.</li>
+                <li><strong>Comportement des Utilisateurs :</strong> Vous vous engagez à utiliser nos services de manière conforme à toutes les lois et réglementations applicables.</li>
+                <li><strong>Confidentialité :</strong> Votre utilisation de nos services est également régie par notre Politique de Confidentialité.</li>
+                <li><strong>Modifications :</strong> Nous nous réservons le droit de modifier ces termes à tout moment. Votre utilisation continue de nos services après les modifications constitue une acceptation de ces changements.</li>
+                <li><strong>Résiliation :</strong> Nous nous réservons le droit de résilier ou de suspendre l'accès à nos services pour toute raison et sans préavis.</li>
+                <li><strong>Politique de Remboursement :</strong> Aucun remboursement ne sera accordé pour nos ateliers, sauf si vous participez à un atelier de musique (instruments) et que vous nous avez informés via le site web. Dans ce cas, un remboursement pourra être envisagé.</li>
+            </ul>
+            <p>Pour toute question concernant ces Conditions Générales, veuillez nous contacter à info@chromarium-cc.com.</p>
+            
+            
+        </div>
+        <div class="buttons">
+            <button id="acceptTerms" class="btn btn-primary">Accepter</button>
+            <button id="closeTerms" class="btn btn-secondary">Fermer</button>
+        </div>
+    </div>
+
+    <section class="container-wide">
+        <h2 class="mb-4" style="font-size:20px;">Suivez notre page Facebook pour rester informé de toutes nos nouveautés et événements !</h2>
+        
+        <div class="fb-page mx-auto" data-href="https://www.facebook.com/Chromarium?mibextid=ZbWKwL" data-tabs="timeline" data-width="500" data-height="100" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+          <blockquote cite="https://www.facebook.com/Chromarium?mibextid=ZbWKwL" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/Chromarium?mibextid=ZbWKwL">‎Chromarium Cultural center مركز كروماريوم الثقافي‎</a>
+          </blockquote>
+        </div>
+      </section>
+      
+            <!-- Contact Section -->
+            <section class="container-wide">
+              <h2>Contactez-Nous</h2>
+              <p>Si vous avez des questions ou souhaitez obtenir plus d'informations sur nos ateliers, veuillez nous contacter.</p>
+              <ul>
+                <li>Email : <a href="mailto:info@chromariumcenter.com">bmdalila@gmail.com</a></li>
+                <li>Téléphone : 90308512</li>
+                <li>Adresse : M'saken Sousse, M'saken, Tunisie</li>
+              </ul>
+            </section>
+              <!-- Introduction Section -->
+              <section class="container-wide">
+              <h2>À Propos de Nous</h2>
+              <p>Au Centre Culturel Chromarium, nous nous engageons à offrir une gamme diversifiée d'expériences culturelles et éducatives. Nos programmes incluent des ateliers de peinture, de musique, de robotique, de calcul mental et de calligraphie, conçus pour inspirer et engager des personnes de tous âges.</p>
+              </section>
+    <!-- Cookie Consent Popup -->
+    <div id="cookie-consent" class="cookie-consent">
+        <p>Nous utilisons des cookies pour améliorer votre expérience. En continuant à naviguer sur notre site, vous acceptez notre utilisation des cookies.</p>
+        <button id="accept-cookies" class="cookie-button">Accepter</button>
+    </div>
+
+    <!-- Include JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show terms popup if the cookie is not set
+            if (!getCookie('terms_accepted')) {
+                $('#termsPopup').show();
+            }
+
+            // Close popup when clicking the close button or outside the popup
+            $('.close-btn, #closeTerms').click(function() {
+                $('#termsPopup').hide();
+            });
+
+            // Set cookie and hide popup on acceptance
+            $('#acceptTerms').click(function() {
+                setCookie('terms_accepted', 'true', 365);  // Cookie expires in 365 days
+                $('#termsPopup').hide();
+            });
+
+            // Prevent closing when clicking inside the popup
+            $('#termsPopup').click(function(event) {
+                event.stopPropagation();
+            });
+
+            // Cookie consent functionality
+            if (!getCookie('cookies_accepted')) {
+                $('#cookie-consent').show();
+            }
+
+            $('#accept-cookies').click(function() {
+                setCookie('cookies_accepted', 'true', 365);
+                $('#cookie-consent').hide();
+            });
+        });
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0, c; c = ca[i] && c[i].trim(); i++) {
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length);
+            }
+            return null;
+        }
+    </script>
+    {% include 'parts/footer.html' %}
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0"></script>
+
+</body>
+</html>

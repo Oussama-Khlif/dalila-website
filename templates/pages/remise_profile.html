@@ -1,0 +1,24 @@
+<!-- remise_profile.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <section class="welcome-message">
+        <h1>Appliquer une remise</h1>
+    </section>    
+
+    <p>Profil: {{ profile }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-secondary">Mettre à jour</button>
+    </form>
+    <br>
+    <a href="{% url 'profile_details' profile.matricule %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div>
+  <section class="welcome-message">
+    <h1>Ajouter ou supprimer des profiles</h1>
+    <p>Gestion des profils : Ajoutez de nouveaux membres à notre communauté</p>
+  </section>
+  
+  {% if creation_message %}
+  <div class="alert alert-info" role="alert">
+      {{ creation_message }}
+  </div>
+{% endif %}
+
+  <h3>Créer un Profil</h3>
+  <form method="post" enctype="multipart/form-data" class="profile-form">
+      {% csrf_token %}
+      
+      <div class="form-group">
+          <label for="{{ profile_form.name.id_for_label }}">Prénom</label>
+          {{ profile_form.name }}
+      </div>
+      
+      <div class="form-group">
+          <label for="{{ profile_form.last_name.id_for_label }}">Nom</label>
+          {{ profile_form.last_name }}
+      </div>
+      
+      <div class="form-group">
+          <label for="{{ profile_form.parent_number.id_for_label }}">Numéro de téléphone</label>
+          {{ profile_form.parent_number }}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ profile_form.ateliers.id_for_label }}">Ateliers inscrits</label>
+        {{ profile_form.ateliers }}
+    </div>
+    
+      
+      <div class="form-group">
+          <label for="{{ profile_form.date_of_birth.id_for_label }}">Date de naissance</label>
+          {{ profile_form.date_of_birth }}
+      </div>
+      
+      <div class="form-group">
+          <label for="{{ profile_form.role.id_for_label }}">Rôle</label>
+          {{ profile_form.role }}
+      </div>
+      
+      <div class="form-group">
+          <label for="{{ profile_form.profile_picture.id_for_label }}">Photo de profil</label>
+          {{ profile_form.profile_picture }}
+      </div>
+  
+      <div class="form-group">
+          <label for="{{ profile_form.registration_type.id_for_label }}">Type d'inscription</label>
+          {{ profile_form.registration_type }}
+      </div>    
+      <button type="submit" name="addprofile_submit">Créer le Profil</button>
+  </form>
+
+  <br>
+  <a class="btn btn-secondary" href="{% url 'myclients' %}" style="display: inline-block;">
+      <i class="fas fa-arrow-left"></i>
+  </a> 
+
+{% endblock %}

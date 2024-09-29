@@ -1,0 +1,16 @@
+{% if event %}
+<div class="container-fluid my-4 px-0" style="background-color: #fff;">
+    <div class="special-event text-center">
+        {% if user.is_superuser %}
+        <a href="{{ "update-event" }}">
+            <img src="{{ event.image.url }}" alt="{{ event.caption }}" class="img-fluid w-100" style="object-fit: cover; height: auto; max-height: 300px;">
+        </a>
+        {% else %}
+        <img src="{{ event.image.url }}" alt="{{ event.caption }}" class="img-fluid w-100" style="object-fit: cover; height: auto; max-height: 300px;">
+        {% endif %}
+        <div class="bg-light p-2 mt-2">
+            <p class="font-weight-bold text-muted" style="font-size: 1.5em;">{{ event.caption|default:'' }}</p>
+        </div>
+    </div>
+</div>
+{% endif %}

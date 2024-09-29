@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<section class="welcome-message">
+    <h1>Marquer les Présences</h1>
+    <p>Suivi des absences : Marquez les absences des enfants. Utilisez cette section pour gérer les absences et suivre les tendances pour chaque enfant.</p>
+</section>
+
+{% if messages %}
+<div class="alert alert-info">
+    <p>
+        {% for message in messages %}
+            {{ message }}{% if not forloop.last %} <br> {% endif %}
+        {% endfor %}
+    </p>
+</div>
+{% endif %}
+
+{% if profiles %}
+<h2 style="color:green; font-size:20px;">Profils trouvés</h2>
+
+<!-- Results Form -->
+<form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+
+    <!-- Include hidden inputs to retain search criteria -->
+    <input type="hidden" name="date_from" value="{{ form.date_from.value }}">
+    <input type="hidden" name="date_to" value="{{ form.date_to.value }}">
+    <input type="hidden" name="atelier" value="{{ form.atelier.value }}">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Profil</th>
+                <th>Présent</th>
+                <th>Absent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile_form in formset %}
+            <tr>
+                <td>{{ profile_form.profile }}</td>
+                <td>{{ profile_form.is_present }}</td>
+                <td>{{ profile_form.is_absent }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-secondary">Soumettre les Présences</button>
+</form>
+
+<br>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+  <i class="fas fa-arrow-left"></i>
+</a>
+{% endif %}
+<br>
+<br>
+<!-- Search Form -->
+<form method="get" class="mb-4">
+    {{ form.date_from.label_tag }} {{ form.date_from }}
+    {{ form.date_to.label_tag }} {{ form.date_to }}
+    {{ form.atelier.label_tag }} {{ form.atelier }}
+    <button type="submit" class="btn btn-secondary">Rechercher les Profils</button>
+</form>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+  <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock %}

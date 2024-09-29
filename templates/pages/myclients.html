@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}    
+
+<div class="container">
+    <section class="welcome-message text-center my-4">
+        <h1>Gérer Les profils</h1>
+        <p>Voir et gérer les profils des enfants</p>
+    </section>
+
+<!-- Student Section -->
+<h2 class="mt-5 mb-4">Étudiants</h2>
+<div class="row">
+    {% for profile in profiles %}
+        {% if profile.role == 'student' or profile.role == 'none' %}
+            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    {% if profile.profile_picture %}
+                        <a href="{% url 'profile_details' profile.matricule %}" data-lightbox="client-gallery" data-title="{{ profile.name }} {{ profile.last_name }}">
+                            <img src="{{ profile.profile_picture.url }}" alt="Photo de profil de {{ profile.name }}" class="card-img-top">
+                        </a>
+                    {% else %}
+                        <a href="{% url 'profile_details' profile.matricule %}">
+                            <img src="{% static 'images/user_client.png' %}" alt="Photo de profil de client" class="card-img-top">
+                        </a>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <h5 class="card-title"><a href="{% url 'profile_details' profile.matricule %}">{{ profile.name }} {{ profile.last_name }}</a></h5>
+                        <p>
+                            {% for atelier in profile.ateliers.all %}
+                                <p class="card-text">{{ atelier.name }}</p>
+                            {% empty %}
+                                <p>Aucun atelier inscrit</p>
+                            {% endfor %}
+                        </p>
+                        
+                        <!-- Container for icons -->
+                        <div class="d-flex justify-content-center flex-wrap mt-auto" style="max-width: 400px;">
+                            {% if profile.alert_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size:25px;">
+                                {{ profile.alert_emoji }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.refund_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size:25px;">
+                                {{ profile.refund_emoji }} <!-- Add icon directly or use <i> tags for font icons -->
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.facture_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size:25px;">
+                                {{ profile.facture_emoji }} <!-- Add icon directly or use <i> tags for font icons -->
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.rattrappage_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size:25px;">
+                                {{ profile.rattrappage_emoji }} <!-- Add icon directly or use <i> tags for font icons -->
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% empty %}
+        <div class="col-12">
+            <p class="text-danger">Aucun étudiant trouvé</p>
+        </div>
+    {% endfor %}
+</div>
+<a href="{% url 'addprofile' %}" class="btn btn-success" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+    <i class="fas fa-plus"></i>
+</a>
+<br>
+<br>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+  <i class="fas fa-arrow-left"></i>
+</a>
+<!-- Teacher Section -->
+<h2 class="mt-5 mb-4">Enseignants</h2>
+<div class="row">
+    {% for profile in profiles %}
+        {% if profile.role == 'teacher' %}
+            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    {% if profile.profile_picture %}
+                        <a href="{% url 'profile_details' profile.matricule %}" data-lightbox="client-gallery" data-title="{{ profile.name }} {{ profile.last_name }}">
+                            <img src="{{ profile.profile_picture.url }}" alt="Photo de profil de {{ profile.name }}" class="card-img-top">
+                        </a>
+                    {% else %}
+                        <a href="{% url 'profile_details' profile.matricule %}">
+                            <img src="{% static 'images/user_client.png' %}" alt="Photo de profil de client" class="card-img-top">
+                        </a>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <h5 class="card-title"><a href="{% url 'profile_details' profile.matricule %}">{{ profile.name }} {{ profile.last_name }}</a></h5>
+                        <p class="card-text">
+                            {% for atelier in profile.ateliers.all %}
+                                <p class="card-text">{{ atelier.name }}</p>
+                            {% empty %}
+                                <p>Aucun atelier inscrit</p>
+                            {% endfor %}
+                        </p>
+
+                        <!-- Container for icons -->
+                        <div class="d-flex justify-content-center flex-wrap mt-auto mb-3" style="max-width: 400px;">
+                            {% if profile.alert_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size: 1.5rem;">
+                                <i class="bi bi-calendar-x text-danger"></i> <!-- Replace with appropriate icon -->
+                                {{ profile.alert_emoji }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.extra_time_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size: 1.5rem;">
+                                {{ profile.extra_time_emoji }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.facture_emoji %}
+                            <div class="d-flex align-items-center me-3 mb-2" style="font-size: 1.5rem;">
+                                {{ profile.facture_emoji }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% empty %}
+        <div class="col-12">
+            <p class="text-danger">Aucun enseignant trouvé</p>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Add Profile Button -->
+<div class="text-center mt-4 mb-5">
+    <a href="{% url 'addprofile' %}" class="btn btn-success" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+        <i class="fas fa-plus"></i>
+    </a>
+    <br>
+    <br>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    </div>
+
+{% endblock %}

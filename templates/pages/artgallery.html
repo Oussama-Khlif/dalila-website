@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+
+<div class="container">
+    <section class="welcome-message">
+        <h1>GALLERIE DES TABLEAUX</h1>
+    </section>
+
+    {% if messages %}
+    <div class="d-flex justify-content-center mt-3" style="margin-left:50px;"> <!-- Center the alert messages -->
+        <div class="alert alert-dismissible fade show w-75"> <!-- Set width for the alert box -->
+            {% for message in messages %}
+                {% if 'rate_message' in message.tags %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+
+    <div class="row">
+        {% for painting in paintings %}
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 d-flex flex-column">
+                <!-- Link to painting details -->
+                <a href="{% url 'painting_details' painting.id %}">
+                    <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" class="card-img-top painting-image" style="height:210px; object-fit: cover;">
+                </a>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title painting-name">{{ painting.name }}</h5>
+                    <p class="card-text painting-price">Prix : {{ painting.price }} DT</p>
+                    <p class="card-text">Évaluation: {{ painting.average_rating|default:"0" }}</p>
+    
+                    <!-- Star Rating & Heart Button Container -->
+                        <!-- Star Rating -->
+                        <div class="star-rating" data-painting-id="{{ painting.id }}">
+                            <div class="stars"></div>
+                            <form action="{% url 'submit_rating' painting.id %}" method="post" class="d-none">
+                                {% csrf_token %}
+                                <input type="hidden" name="painting_id" value="{{ painting.id }}">
+                                <input type="hidden" id="rating-value-{{ painting.id }}" name="rating" value="">
+                            </form>
+                        
+    
+                        <!-- Heart Button for Wishlist, placed below stars -->
+                        <button class="btn btn-outline-danger mt-2" onclick="addToWishlist({{ painting.id }})">
+                            <span class="heart-icon">❤️</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="no-paintings text-center">Aucune peinture disponible.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+    <div class="text-center mt-4 mb-5">
+        <a href="{% url 'add_painting' %}" class="btn btn-success" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block; color: white;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+<style>
+    .star-rating {
+        margin: 10px 0;
+    }
+    .stars {
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .stars div {
+        color: #ddd;
+        font-size: 1.5em;
+        transition: color 0.3s ease;
+    }
+    .stars div.selected {
+        color: gold;
+    }
+    .stars div:hover,
+    .stars div:hover ~ div {
+        color: #ddd;
+    }
+    .stars:hover div {
+        color: gold;
+    }
+    .stars div:hover ~ div {
+        color: #ddd;
+    }
+    .heart-icon {
+        font-size: 1.5em; /* Adjust size as needed */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.star-rating').forEach(function (rating) {
+            var stars = rating.querySelector('.stars');
+            var form = rating.querySelector('form');
+            var ratingValueInput = form.querySelector('input[name="rating"]');
+
+            for (var i = 1; i <= 5; i++) {
+                var star = document.createElement('div');
+                star.dataset.value = i;
+                star.innerText = '★';
+                star.addEventListener('click', function () {
+                    var value = this.dataset.value;
+                    ratingValueInput.value = value;
+                    updateStars(stars, value);
+                    form.submit();
+                });
+                stars.appendChild(star);
+            }
+
+            function updateStars(starsContainer, value) {
+                starsContainer.querySelectorAll('div').forEach(function (star) {
+                    if (star.dataset.value <= value) {
+                        star.classList.add('selected');
+                    } else {
+                        star.classList.remove('selected');
+                    }
+                });
+            }
+        });
+    });
+
+    function addToWishlist(paintingId) {
+        const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+        
+        if (!isAuthenticated) {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        console.log('Adding painting with ID:', paintingId); // Debugging log
+
+        fetch("{% url 'add_to_wishlist' %}", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ 'painting_id': paintingId })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Peinture ajoutée à votre liste de souhaits !');
+                window.location.reload(); // Refresh the page after adding to wishlist
+            } else {
+                alert('Erreur lors de l\'ajout à la liste de souhaits.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de l\'ajout à la liste de souhaits.');
+        });
+    }
+</script>
+
+{% endblock %}

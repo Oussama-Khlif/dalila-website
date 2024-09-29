@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>
+    {% if event %}
+    <section class="welcome-message">
+        <h1>Mettre à jour l'événement</h1>
+    </section>
+    {% else %}
+    <section class="welcome-message">
+        <h1>Créer un nouveau événement</h1>
+    </section>
+    {% endif %}
+</h2>
+
+<!-- Event Form -->
+<form method="post" enctype="multipart/form-data" style="text-align: center;">
+    {% csrf_token %}
+    {{ event_form.as_p }}
+    <button type="submit" name="event_submit">Enregistrer l'événement</button>
+
+    <!-- Show the delete button if the event exists -->
+    {% if event %}
+        <div style="margin-top: 10px;">
+            <button type="submit" name="delete_event" value="{{ event.id }}" class="btn btn-secondary" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">Supprimer l'événement</button>
+        </div>
+    {% endif %}
+</form>
+
+{% endblock %}

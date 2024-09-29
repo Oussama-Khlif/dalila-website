@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+
+
+
+    <div class="main-page">
+        <section class="welcome-message">
+            <h1 style="font-size:25px;">Annoncer votre absence ici {{ user.username }}</h1>
+            <p style="font-size: 15px;">Veuillez entrer votre alerte d'absence pour nous aider à organiser votre rattrapage ultérieurement.</p>
+            <p style="font-size: 15px;">Si vous êtes abonné à l'atelier de musique (instruments) et que vous annoncez votre absence à l'avance, vous serez remboursé pour cette leçon</p>
+        </section>
+
+        {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success fade show" role="alert">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger fade show" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ alert_form.as_p }}  <!-- Render the form without automatic error messages -->
+        <button type="submit" class="btn btn-secondary mt-3">Enregistrer l'alerte</button>
+    </form>
+<br>
+        <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+            </div>
+{% endblock %}

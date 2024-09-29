@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<body style="background-image: url('{% static 'images/bg.jpg' %}'); background-size: cover; background-position: center;">
+<div class="container">
+  <section class="welcome-message">
+    <h1 style="font-size:24px;">Ajouter des photos</h1>
+  </section>
+
+  <!-- Form for uploading photos/videos -->
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="upload_submit">Envoyer</button>
+
+  </form>
+  <br>
+  <a class="btn btn-secondary" href="{% url 'gallery' %}">Mes Photos</a>
+
+
+  {% if message %}
+    <p>{{ message }}</p>
+  {% endif %}
+  
+{% endblock %}

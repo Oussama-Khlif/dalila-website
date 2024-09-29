@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <section class="welcome-message">
+        <h1 style="font-size:25px;">Historique de présences</h1>
+    </section>
+    <p> {{ profile.name }} {{ profile.last_name }}</p>
+    <p>Matricule : {{ form.initial.matricule }}</p>
+    {% if profile.role != 'teacher' %}
+    <p>Type d'inscription : {{ profile.registration_type }}</p>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table table-secondary">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Séance</th> <!-- Updated header for combined field -->
+                    <th>Atelier</th>
+                    <th>Statut</th>
+                    <th>Payé</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for absence in absences %}
+                    <tr>
+                        <td>
+                            <span style="font-size: 1em;"><strong>{{ absence.date_from|date:"d F Y" }}</strong></span><br> <!-- Date on the first line -->
+                            <span style="font-size: 0.8em;">(<strong>{{ absence.date_from|date:"H:i" }}</strong> &rarr; <strong>{{ absence.date_to|date:"H:i" }}</strong>)</span> <!-- Time on the second line -->
+                        </td>
+                        <td>{{ absence.atelier.name }}</td>
+                        <td>{{ absence.is_present|yesno:"Présent,Absent" }}</td>
+    
+                        <!-- Payé Column Logic -->
+                        <td>
+                            {% if profile.role == 'teacher' and absence.is_absent %}
+                                Non
+                            {% else %}
+                                {{ absence.is_archived|yesno:"Oui,Non" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">Aucune absence trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{% url 'profile_details' profile.matricule %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="welcome-message">
+    <h1>Ajouter des photos</h1>
+</section>
+
+{% if messages %}
+    <div class="alert alert-danger" role="alert">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Télécharger</button>
+    </form>
+    <br>
+    <a class="btn btn-secondary" href="{% url 'list_media' %}" style="display: inline-block; color: white;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+{% endblock content %}

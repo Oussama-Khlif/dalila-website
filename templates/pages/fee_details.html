@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+
+<section class="welcome-message">
+    <h1 style="font-size:25px;">Détails de facture de {{ profile.name }} {{ profile.last_name }}</h1>
+  </section>
+
+  {% if refund_message %}
+  <div class="alert alert-info">{{ refund_message }}</div>
+{% endif %}
+{% if remise_applied %}
+<div class="alert alert-warning" role="alert">
+    Attention : Une remise de {{ profile.remise }}% est appliquée à ce profil.
+</div>
+{% endif %}
+{% if messages %}
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+        </div>
+    {% else %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+<p>{{ profile}}</p>
+<ul class="ateliers-list">
+    {% for atelier in profile.ateliers.all %}
+        <p>{{ atelier.name }}</p>
+    {% endfor %}
+
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Statistique</th>
+                            <th>Valeur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Séances présents</td>
+                            <td>{{ presence_count }}</td>
+                        </tr>
+                        <tr>
+                            <td>Séances absents</td>
+                            <td>{{ total_absences_count }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td>{{ total_presence_absence_count }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
+<br>
+
+<!-- Display subscription fee and facture -->
+<p>Frais d'inscription : <span style="color: green;">{{ subscription_fee|floatformat:2 }} DT</span></p>
+<p>Facture de/des l'atelier(s) : <span style="color: green;">{{ facture|floatformat:2 }} DT</span></p>
+<p>Montant total à payer : <span style="color: green;">{{ total_sum|floatformat:2 }} DT</span></p>
+
+
+    <!-- Button to clear all absences -->
+    <form method="post" action="{% url 'clear_absences_fee' profile.matricule %}">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir confirmer le payement pour ce profil ?')">Confirmer le payement d'inscription</button>
+    </form>
+
+    <!-- Button to clear all absences -->
+    <form method="post" action="{% url 'clear_absences' profile.matricule %}">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir confirmer le payement pour ce profil ?')">Confirmer le payement de/des l'atelier(s)</button>
+    </form>
+<br>
+
+<a class="btn btn-secondary" href="{% url 'absences_details' matricule=profile.matricule %}">Historique de présences</a>
+<br>
+    <br>
+    <a class="btn btn-secondary" href="{% url 'profile_details' profile.matricule %}" style="display: inline-block;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+</div>
+    {% endblock content %}

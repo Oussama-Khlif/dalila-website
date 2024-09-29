@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <section class="welcome-message">
+            <h1 style="font-size:25px;">Détails de facture de {{ profile.name }} {{ profile.last_name }}</h1>
+          </section>
+
+          {% if messages %}
+          {% for message in messages %}
+              {% if message.tags == 'error' %}
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      {{ message }}
+                  </div>
+              {% else %}
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      {{ message }}
+                  </div>
+              {% endif %}
+          {% endfor %}
+      {% endif %}
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Statistique</th>
+                    <th>Valeur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Présences</td>
+                    <td>{{ presence_count }}</td>
+                </tr>
+                <tr>
+                    <td>Absences</td>
+                    <td>{{ absence_count }}</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ total_count }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <br>
+        <p>Atelier : {{ atelier }}</p>
+        <p>Temps total travaillé : {{ total_hours }} heures et {{ total_minutes }} minutes</p>
+        <p>Prix de l'heure : <span style="color: green;">{{ fee_per_hour }}</span> <span style="color: green;">DT</span></p>
+        <h3>Total des frais : <span style="color: green;">{{ total_fee }}</span> <span style="color: green;">DT</span></h3>        
+            <!-- Button to clear all absences -->
+    <form method="post" action="{% url 'clear_absences_teacher' profile.matricule %}">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir confirmer le payement pour ce profil ?')">Confirmer le payement</button>
+    </form>
+
+    <br>
+    <!-- Button to return to profile details page -->
+        <!-- Centered Button -->
+    <a class="btn btn-secondary" href="{% url 'profile_details' profile.matricule %}" style="display: inline-block;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+{% endblock %}

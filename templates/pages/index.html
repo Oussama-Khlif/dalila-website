@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div>
+{% include 'pages/special_event.html' %}
+{% include 'pages/messenger_bubble.html' %}
+{% include 'pages/scroll_button.html' %}
+
+
+  <div class="main-page">
+    <section class="welcome-message">
+      <h1>Chromarium Cultural Center</h1>
+      <p style="font-size: 20px;">كروماريوم فضاء فني ثقافي وتعليمي يسعى إلى تنمية الميول 🌺</p>
+    </section>
+
+    <section class="image-gallery">
+      <div>
+        <div class="gallery-slide">
+          <a href="#">
+            <img src="{% static 'images/gallery_slides/1.jpg' %}" alt="Gallery Image 1">
+          </a>
+          <a href="#">
+            <img src="{% static 'images/gallery_slides/2.jpg' %}" alt="Gallery Image 2">
+          </a>
+          <a href="#">
+            <img src="{% static 'images/gallery_slides/3.jpg' %}" alt="Gallery Image 3">
+          </a>
+          <a href="#">
+            <img src="{% static 'images/gallery_slides/4.jpg' %}" alt="Gallery Image 4">
+          </a>
+          <a href="#">
+            <img src="{% static 'images/gallery_slides/5.jpg' %}" alt="Gallery Image 5">
+          </a>
+        </div>
+      </div>
+    </section>
+  
+  <style>
+      .custom-gallery-container {
+          max-width: 1200px; /* Adjust this value as needed */
+          margin: 0 auto; /* Center the container */
+          overflow: hidden; /* Hide overflow to prevent scrollbars */
+          position: relative; /* Needed for absolute positioning of slides */
+          background-color: #fff; /* Background color */
+      }
+  
+      .gallery-slide {
+          display: flex;
+          transition: transform 1s ease-in-out;
+      }
+  
+      .gallery-slide a {
+          display: block;
+          flex: 1 0 100%; /* Ensure each image takes full width of the container */
+          height: 300px; /* Adjust the height as needed */
+      }
+  
+      .gallery-slide img {
+          width: 100%;
+          height: 100%; /* Make the image fill the height of its parent */
+          object-fit: cover; /* Cover the container without stretching */
+      }
+  </style>
+  
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const slideContainer = document.querySelector('.gallery-slide');
+          const slides = document.querySelectorAll('.gallery-slide a');
+          const slideWidth = slides[0].offsetWidth;
+          let currentIndex = 0;
+          const firstSlideClone = slides[0].cloneNode(true);
+          slideContainer.appendChild(firstSlideClone);
+  
+          function startSlideShow() {
+              setInterval(() => {
+                  currentIndex++;
+                  slideContainer.style.transition = 'transform 1s ease-in-out';
+                  slideContainer.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+  
+                  if (currentIndex === slides.length) {
+                      setTimeout(() => {
+                          slideContainer.style.transition = 'none';
+                          slideContainer.style.transform = `translateX(0)`;
+                          currentIndex = 0;
+                      }, 1000); // Match this with the transition time (1s)
+                  }
+              }, 3000); // Change image every 3 seconds
+          }
+  
+          startSlideShow();
+      });
+  </script>
+  
+  
+
+  <section class="atelier-introduction">
+    <section class="welcome-message">
+      <h1>مقدمة تعريفية💐</h1>
+    </section>
+    <p>
+      كروماريوم فضاء فني ثقافي وتعليمي يسعى إلى تنمية الميول والقيم والمواهب للأطفال والشباب وتعهدها بالرعاية والتهذيب إلى جانب خلق روابط ثقافية وإجتماعية بين المبدعين في مختلف المجالات الثقافية والفنية والمجالات الأخرى، وكذلك إقامة المعارض الفنية الحية والأمسيات الفنية والثقافية والتعريف بالإنتاجات الأدبية والفكرية والفنية لللمنخرطين. وأيضا الإهتمام بالطفل من خلال دعمه وتشجيعه على الإبداع والخلق في مجالات متعددة من خلال ورشات عمل تكوينية في مجال الرسم والنحت والخط العربي، والتصوير الفوتوغرافي والموسيقى واللغات الأجنبية.
+      رؤيتنا
+      أن يكون فضاءً فنيا وثقافيا محوريا رائدا في المجال الفني والثقافي والتعليمي، يساهم في رعاية وتشجيع الفنون والثقافة.
+      رسالتنا
+      الإلتزام بتكوين الناشئة في المجال الفني والثقافي والأدبي ودعمهم وحثهم على الإستمرار في التعلّم والإستكشاف والتطوًر. مع مراعاة التقاليد الثقافية والحضارية للمجتمع.
+      أهدافنا
+      تمكين الأطفال والشباب من تنمية الأفكار والقدرات الذهنية وصقلها فنيا حسب الأدوات المتوفرة.
+      البرامج المقدمة
+      نقدم على مدار السنة حزمة من البرامج الفنية والثقافية والتعليمية، تهدف إلى تعزيز الحيوية الثقافية لدى الناشئة والتى ترتبط أساسا بالوعي الجمالي والتربية والحساسية الفنية لدى الأطفال والشباب  المهتمين بمجال الفنون التشكيلية، والتصوير، والموسيقى واللغات. تساعد هذه البرامج في تطوير وصقل  المواهب وتنميتها  وكذلك توفير منصّات تبادل معرفي ثقافي وتجاربي بين مختلف الأنماط الابداعية من الأطفال والشباب .
+      وإننا لنسعى إلى الإسهام إيجابا في تطوير أفكار الفرد والمجتمع، ودفعها نحو الإبداع والتميّز. كما نهدف  إلى دعم  الأطفال والشباب  من خلال توفير ممهدات النجاح وتطوير قدراتهم الفنية والثقافية والعلمية. إن العمل الفني والثقافي جهد مستمر في سبيل خدمة المجتمع وتطويره .
+      وفي مايلي  مجموعة النوادي التي نقدمها على سبيل الذكر لا الحصر
+      <ul style="list-style: none;">
+        <li style="font-size: 24px;">نادي الفنون التشكيلية</li>
+        <li style="font-size: 24px;">نادي الخط العربي</li>
+        <li style="font-size: 24px;">نادي التصوير الفوتوغرافي</li>
+        <li style="font-size: 24px;">نادي الموسيقى</li>
+        <li style="font-size: 24px;">نادي الفرنسية</li>
+        <li style="font-size: 24px;">نادي الإنجليزية</li>
+        <li style="font-size: 24px;">نادي العلوم</li>
+    </ul>
+    </p>
+</section>
+
+<section class="todays-video">
+  <section class="welcome-message">
+      <h1>Video d'aujourd'hui</h1>
+  </section>
+
+  <div class="media-container">
+      {% if latest_video %}
+          <p style="font-size: 18px;">{{ latest_video.title }}</p>
+          <video controls>
+              <source src="{{ latest_video.video_file.url }}" type="video/mp4">
+              Votre navigateur ne prend pas en charge la balise vidéo.
+          </video>
+      {% else %}
+          <p>Aucune vidéo téléchargée pour l'instant</p>
+      {% endif %}
+  </div>
+</section>
+
+{% if user.is_superuser %}
+<a href="{% url 'upload_video' %}" class="btn btn-success">Modifier le vidéo</a><br><br>
+<a href="{% url 'update_event' %}" class="btn btn-success">Modifier la bannière</a>
+{% endif %}
+
+
+<!-- Workshops Section -->
+<section class="welcome-message">
+  <h1>Les Ateliers</h1>
+  <p class="lead">استكشفوا ورشاتنا الإبداعية والتعليمية: الرسم، الموسيقى، الخط، الحساب الذهني، الروبوتيك، المسرح، واللغات.</p>
+</section>
+
+<div class="container">
+  <div class="row">
+
+    <!-- Atelier de Peinture -->
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'paint' %}">
+          <img src="{% static 'images/paint.jpg' %}" class="card-img-top" alt="Atelier de Peinture">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Peinture</h3>
+          <p class="card-text flex-grow-1">Libérez votre créativité avec la peinture</p>
+          <a href="{% url 'paint' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atelier de Musique -->
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'music' %}">
+          <img src="{% static 'images/music.jpg' %}" class="card-img-top" alt="Atelier de Musique">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Musique</h3>
+          <p class="card-text flex-grow-1">Libérez votre talent musical avec nos ateliers</p>
+          <a href="{% url 'music' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atelier de Robotique -->
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'robotics' %}">
+          <img src="{% static 'images/robotics.jpg' %}" class="card-img-top" alt="Atelier de Robotique">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Robotique</h3>
+          <p class="card-text flex-grow-1">Explorez l'innovation technologique de robotique</p>
+          <a href="{% url 'robotics' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atelier de Calcul Mental -->
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'mental_calculation' %}">
+          <img src="{% static 'images/Calcul_mental.png' %}" class="card-img-top" alt="Atelier de Calcul Mental">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Calcul Mental</h3>
+          <p class="card-text flex-grow-1">Développez vos compétences mentales avec nos ateliers de calcul</p>
+          <a href="{% url 'mental_calculation' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atelier de Calligraphie -->
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'calligraphy' %}">
+          <img src="{% static 'images/caligraphy.jpg' %}" class="card-img-top" alt="Atelier de Calligraphie">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Calligraphie</h3>
+          <p class="card-text flex-grow-1">Perfectionnez votre art de l’écriture avec nos ateliers de calligraphie</p>
+          <a href="{% url 'calligraphy' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atelier de Théâtre -->
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'theater' %}">
+          <img src="{% static 'images/theater.jpg' %}" class="card-img-top" alt="Atelier de Théâtre">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Théâtre</h3>
+          <p class="card-text flex-grow-1">Exprimez votre passion sur scène avec nos ateliers de théâtre.</p>
+          <a href="{% url 'theater' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- Promo Section -->
+<section class="container py-5">
+  <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="{% static 'images/artgallery.jpg' %}" alt="Art Gallery" class="img-fluid rounded">        
+      </div>
+      <div class="col-md-6">
+          <h2 class="display-4">Découvrez notre Gallerie des Tableaux</h2>
+          <p class="lead">Explorez notre collection exclusive de peintures. Visitez notre galerie pour découvrir des œuvres uniques qui pourraient parfaitement s'adapter à votre espace.</p>
+          <a href="{% url 'art_gallery' %}" class="btn btn-secondary">Voir la Galerie</a>
+      </div>
+  </div>
+</section>
+
+
+
+<!-- Testimonials Section -->
+<section>
+  <div class="welcome-message">
+    <div class="col-12">
+      <h1>Les Avis</h1>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <img src="{% static 'images/zohra bdey essoussi.jpg' %}" alt="Sarah Lee" class="card-img-top rounded-circle mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Zohra Bdey Essoussi</h5>
+          <p class="card-text">انشاء الله بتوفيق يا دودة تستحق كل خير</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <img src="{% static 'images/farah farah jebali.jpg' %}" alt="John Doe" class="card-img-top rounded-circle mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Farah Farah Jebali</h5>
+          <p class="card-text">بالتوفيق عزيزتي دلولات 💖 و شكرا على هذا الامتنان 🥰♥️ ادام الله صداقتنا</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <img src="{% static 'images/Nassima Galai.jpg' %}" alt="Emily Johnson" class="card-img-top rounded-circle mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Nassima Galai</h5>
+          <p class="card-text">ألف شكر سيدتى على التكريم و على الامسية التحفونة من نجاح الى نجاح</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <img src="{% static 'images/amelbalti.jpg' %}" alt="Emily Johnson" class="card-img-top rounded-circle mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Amel Balti</h5>
+          <p class="card-text">الله وحد و ما شاء الله على المجموعة...والله وحدعلى دليلة ما كيفها حد في الخدمة و الاخلاق...بالتوفيق انشالله</p>
+        </div>
+      </div>
+    </div>
+ 
+</section>
+ </div>
+
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const cookieConsent = document.getElementById('cookie-consent');
+          const acceptCookiesButton = document.getElementById('accept-cookies');
+
+          // Check if the user has already accepted cookies
+          if (!getCookie('cookies_accepted')) {
+              // Show the cookie consent bar
+              cookieConsent.style.display = 'block';
+          }
+
+          // Handle the accept button click
+          acceptCookiesButton.addEventListener('click', function() {
+              setCookie('cookies_accepted', 'true', 365); // Set cookie to expire in 365 days
+              cookieConsent.style.display = 'none'; // Hide the cookie consent bar
+          });
+
+          // Function to get a cookie by name
+          function getCookie(name) {
+              const value = `; ${document.cookie}`;
+              const parts = value.split(`; ${name}=`);
+              if (parts.length === 2) return parts.pop().split(';').shift();
+          }
+
+          // Function to set a cookie
+          function setCookie(name, value, days) {
+              let expires = '';
+              if (days) {
+                  const date = new Date();
+                  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                  expires = `; expires=${date.toUTCString()}`;
+              }
+              document.cookie = `${name}=${value || ''}${expires}; path=/`;
+          }
+      });
+  </script>
+{% endblock %}

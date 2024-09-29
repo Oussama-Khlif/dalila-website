@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load custom_filters %}
+
+<section class="welcome-message">
+    <h1 style="font-size:25px;">Détails du profil {{ profile.name }} {{ profile.last_name }}</h1>
+  </section>
+  
+
+
+    <div class="profile-details-page">
+        {% if profile.profile_picture %}
+            <img class="profile-picture" src="{{ profile.profile_picture.url }}" alt="Photo de profil de {{ profile.name }}">
+        {% else %}
+            <img class="profile-picture" src="{% static 'images/user_client.png' %}" alt="Photo de profil de client">
+        {% endif %}
+
+        
+        <h2>{{ profile.name }} {{ profile.last_name }}</h2>
+        <p>Matricule : {{ profile.matricule }}</p>
+        <p>Rôle : {{ profile.get_role_display }}</p>
+        <p>Numéro de Parent : {{ profile.parent_number }}</p>
+        <p>Date de Naissance : {{ profile.date_of_birth }} ({{ profile.date_of_birth|calculate_age }} ans)</p>
+        
+        <p>Date d'Inscription : {{ profile.date_registered|date:"d-m-Y H:i" }}</p>       
+        <p>Type d'inscription : {{ profile.get_registration_type_display }}</p>
+        <p>Ateliers Inscrits :</p>
+        <ul class="ateliers-list">
+            {% for atelier in profile.ateliers.all %}
+                <li class="ateliers-list-item">{{ atelier.name }}</li>
+            {% empty %}
+                <li class="ateliers-list-item">Aucun atelier inscrit</li>
+            {% endfor %}
+        </ul>
+
+
+
+
+        {% if profile.absence_alert or extra_time or refund_message or facture_message or rattrappage_message %}
+        <div class="bg-light p-3 border rounded">
+            {% if profile.absence_alert %}
+            <p class="text-danger">⚠️ {{ profile.name }} a annoncé son absence le {{ profile.absence_alert|date:"d-m-Y" }}</p> 
+            <p class="text-danger">{{ profile.atelier_absent }}</p>                                               
+            <p class="text-danger">Date d'absence: {{ profile.upcoming_absence_date|date:"d-m-Y" }}</p>
+        
+            <!-- Delete button with bin icon -->
+            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeletion()" title="Supprimer l'alerte d'absence">
+                <i class="fas fa-trash-alt"></i> <!-- Bin icon -->
+            </button>
+        
+            <!-- Hidden form -->
+            <form id="deleteAbsenceForm" method="post" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="delete_absence" value="1"> <!-- Hidden input -->
+            </form>
+        
+            <script>
+                function confirmDeletion() {
+                    const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette alerte d'absence ?");
+                    if (confirmation) {
+                        document.getElementById('deleteAbsenceForm').submit();
+                    }
+                }
+            </script>
+        {% endif %}
+        
+        
+    
+            {% if extra_time %}
+            <p class="text-info">{{ extra_time }}</p>
+            {% endif %}
+            
+            {% if refund_message %}
+                <p class="text-success">{{ refund_message }}</p>
+            {% endif %}
+            
+            {% if facture_message %}
+                <p class="text-success">{{ facture_message }}</p>
+            {% endif %}
+            
+            {% if rattrappage_message %}
+                <p class="text-primary">{{ rattrappage_message }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        <br>
+        
+        
+    
+
+        {% if profile.role == 'student' or profile.role == 'none' %}
+        <a class="btn btn-success" href="{% url 'fee_details' matricule=profile.matricule %}">Facture de {{ profile.name }}</a>
+    {% elif profile.role == 'teacher' %}
+        <a href="{% url 'teacher_fee' profile.matricule %}" class="btn btn-success">Frais de {{ profile.name }}</a>
+    {% endif %}
+    <br>
+    
+    {% if profile.role == 'student' or profile.role == 'none' %}
+        <a href="{% url 'refund_profile' profile.matricule %}" class="btn btn-success">Remboursement</a>
+        <br>
+        <a href="{% url 'remise_profile' profile.matricule %}" class="btn btn-success">Remise</a>
+<br>
+<a class="btn btn-primary" href="{% url 'rattrappage' matricule=profile.matricule %}">Rattrappage</a>
+<br>
+    {% endif %}
+    
+    <a class="btn btn-secondary" href="{% url 'absences_details' matricule=profile.matricule %}">Historique de présences</a>
+    
+
+<!-- Hidden Form -->
+<form id="delete-profile-form" method="post" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="profile_matricule" value="{{ profile.matricule }}">
+    <!-- Any other hidden fields if needed -->
+</form>
+<br>
+<div style="display: flex; gap: 10px;">
+    <a class="btn btn-secondary" href="{% url 'edit_profile' matricule=profile.matricule %}" style="margin-right: 10px;">
+        <i class="fas fa-edit"></i>
+    </a>
+
+    <button class="btn btn-danger" type="button" onclick="confirmAndSubmitDelete('{{ profile.matricule }}')">
+        <i class="fas fa-trash-alt"></i>
+    </button>
+</div>
+
+<br>
+
+<script>
+    function confirmAndSubmitDelete(matricule) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce profil ?')) {
+            var form = document.getElementById('delete-profile-form');
+            form.action = "{% url 'delete_profile' matricule='__MATRICULE__' %}".replace('__MATRICULE__', matricule);
+            form.submit();
+        }
+    }
+</script>
+
+
+<a class="btn btn-secondary" href="{% url 'myclients' %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+    </div>
+{% endblock content %}

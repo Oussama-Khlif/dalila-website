@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<section class="welcome-message">
+    <h1>Ajouter un Atelier</h1>
+</section>    
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-secondary">Ajouter l'Atelier</button>
+</form>
+<br>
+
+<a class="btn btn-secondary" href="{% url 'my_ateliers' %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+<a>
+{% endblock %}

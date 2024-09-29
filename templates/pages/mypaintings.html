@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="main-page">
+        <section class="welcome-message">
+          <h1 > Les Tableaux de {{ user.username }} !</h1>
+        </section>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    
+    <!-- Afficher les Peintures de l'Utilisateur -->
+    <div class="row">
+        {% for painting in paintings %}
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <!-- Link to painting details -->
+                <a href="{% url 'painting_details' painting.id %}">
+                    <!-- Image ajustée avec taille fixe -->
+                    <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" class="card-img-top img-fluid" style="height: 210px; object-fit: cover;">
+                </a>
+                <div class="card-body">
+                    <!-- Link to painting details (optional if you want details clickable also in body) -->
+                    <a href="{% url 'painting_details' painting.id %}">
+                        <h5 class="card-title">{{ painting.name }}</h5>
+                        <p class="card-text">Prix : {{ painting.price }} DT</p>
+                    </a>
+                    
+<br>
+                    <div class="d-flex justify-content-center" style="gap: 10px;">
+                        <!-- Modifier button as a small square icon -->
+                        <a href="{% url 'edit_painting' painting_id=painting.id %}" class="btn btn-secondary btn-sm" style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; padding: 0; font-size: 16px; line-height: 1;">
+                            <i class="fas fa-edit" style="margin: 0;"></i>
+                        </a>
+                        
+                        
+                    
+                        <!-- Supprimer button as a small square icon -->
+                        <button class="btn btn-danger btn-sm" style="width: 40px; height: 40px;" onclick="confirmDeletion({{ painting.id }})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    
+
+
+                    <script>
+                    function confirmDeletion(id) {
+                        if (confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")) {
+                            submitDeleteForm(id);
+                        }
+                    }
+                    </script>
+                    
+                    <!-- Hidden forms for submission -->
+                    <form id="edit-form-{{ painting.id }}" method="post" action="{% url 'edit_painting' painting.id %}" style="display:none;">
+                        {% csrf_token %}
+                    </form>
+
+                    <form id="delete-form-{{ painting.id }}" method="post" style="display:none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="painting_id" value="{{ painting.id }}">
+                        <input type="hidden" name="delete_painting" value="1">
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="alert alert-info">Vous n'avez pas encore téléchargé de peintures.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-4 mb-5">
+        <a href="{% url 'add_painting' %}" class="btn btn-success" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+    <div class="text-center mt-4 mb-5">
+
+        <a href="{% url 'art_gallery' %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+            </div>
+</div>
+
+<script>
+// Function to submit the edit form
+function submitEditForm(paintingId) {
+    document.getElementById('edit-form-' + paintingId).submit();
+}
+
+// Function to submit the delete form
+function submitDeleteForm(paintingId) {
+    document.getElementById('delete-form-' + paintingId).submit();
+}
+</script>
+
+{% endblock %}

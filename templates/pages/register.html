@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% include 'pages/messenger_bubble.html' %}
+<style>
+    .alert-danger {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+    <section class="welcome-message">
+        <h1>Bienvenue dans Chromarium</h1>
+        <p>Créez votre compte dès aujourd'hui et rejoignez notre communauté ! Remplissez le formulaire ci-dessous pour vous inscrire et commencer à explorer toutes les fonctionnalités.</p>
+    </section>
+    <div class="profile-form">
+        <h2>Créer un compte</h2>
+    
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Display manual error messages from the view -->
+            {% if messages %}
+                <div class="alert alert-danger" style="color: red;">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Render the form fields without the default error messages -->
+            {{ form.username.label_tag }} {{ form.username }}<br>
+            {{ form.email.label_tag }} {{ form.email }}<br>
+            {{ form.password1.label_tag }} {{ form.password1 }}<br>
+            {{ form.password2.label_tag }} {{ form.password2 }}<br>
+            {{ form.profile_picture.label_tag }} {{ form.profile_picture }}<br>
+    
+            <button type="submit" class="btn btn-secondary">Créer Compte</button>
+        </form>
+    
+        <br>
+        <div class="already-have-account">
+            <p>Déjà un compte ? <a href="{% url 'login' %}" class="btn btn-secondary">Connectez-vous</a></p>
+        </div>
+    </div>
+    
+{% endblock %}

@@ -1,0 +1,31 @@
+<!-- templates/forms/custom_field.html -->
+<div class="form-group">
+    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+    {{ field.errors }}
+    <!-- Render the field without showing the file name -->
+    {% if field.field.widget.input_type == 'file' %}
+        <!-- For file inputs, you might want to hide the file name -->
+        <input type="file" id="{{ field.id_for_label }}" name="{{ field.name }}" class="form-control" />
+    {% else %}
+        {{ field }}
+    {% endif %}
+    {% if field.help_text %}
+        <small class="form-text text-muted">{{ field.help_text }}</small>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hide file name for file inputs
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const fileName = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
+                const label = this.previousElementSibling; // Adjust if needed to find the correct label
+                if (label) {
+                    label.innerHTML = fileName; // Hide or customize the file name as needed
+                }
+            });
+        });
+    });
+</script>

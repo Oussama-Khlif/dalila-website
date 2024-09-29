@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+{% include 'pages/scroll_button.html' %}
+
+
+  <section class="welcome-message">
+    <h1>À Propos de Nous</h1>
+    <p>Découvrez l'histoire et la mission de notre galerie, où chaque œuvre d'art raconte une histoire unique. Nous sommes dédiés à enrichir votre expérience culturelle et à célébrer la créativité sous toutes ses formes.</p>
+  </section>
+  <div class="about-us">
+
+      <section class="welcome-message">
+        <h1>Notre Mission</h1>
+      </section>
+      <p>Au Centre Culturel Chromarium, notre mission est de favoriser la créativité et l'apprentissage à travers une variété de programmes culturels et éducatifs. Nous nous efforçons de fournir un environnement dynamique où les individus de tous âges peuvent explorer leurs passions et développer de nouvelles compétences.</p>
+      <img src="{% static 'images/about_im1.jpg' %}" alt="Notre Mission" style="max-width: 100%; height: auto; margin-top: 20px; display: block; margin-left: auto; margin-right: auto;">
+    </section>
+
+      <section class="welcome-message">
+        <h1>Notre histoire</h1>
+      </section>      
+      <p>Fondé en 2020, le Centre Culturel Chromarium a commencé comme une petite initiative communautaire visant à promouvoir les arts et la culture. Au fil des ans, nous sommes devenus un centre de premier plan pour les ateliers, les expositions et les événements culturels. Notre histoire est celle de la dévotion, de la croissance et d'un engagement envers l'enrichissement de notre communauté.</p>
+      <img src="{% static 'images/about_im2.jpg' %}" alt="Notre Histoire" style="max-width: 100%; height: auto; margin-top: 20px; display: block; margin-left: auto; margin-right: auto;">
+    </section>
+{% endblock %}

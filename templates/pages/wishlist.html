@@ -1,0 +1,68 @@
+<!-- wishlist.html -->
+{% extends 'base.html' %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+
+<div class="container">
+
+    <section class="welcome-message">
+        <h1>Ma Liste de Souhaits ❤️</h1>
+    </section>
+
+    {% if object_list %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Tableau</th>
+                <th style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nom</th>
+                <th>Prix</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for painting in object_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'painting_details' painting.id %}">
+                        <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" style="width: 100px;">
+                    </a>
+                </td>
+                <td style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ painting.name }}</td>
+                <td>{{ painting.price }} DT</td>
+                <td>
+                    <!-- Button to trigger removal -->
+                    <button class="btn btn-danger btn-sm remove-btn" data-painting-id="{{ painting.id }}">Retirer</button>
+
+                    <!-- Hidden form for removal -->
+                    <form id="remove-form-{{ painting.id }}" method="post" action="{% url 'remove_from_wishlist' painting.id %}" style="display:none;">
+                        {% csrf_token %}
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Votre liste de souhaits est vide.</p>
+    {% endif %}
+</div>
+<br>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.remove-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var paintingId = this.getAttribute('data-painting-id');
+            var form = document.getElementById('remove-form-' + paintingId);
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce tableau de votre liste de souhaits ?')) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

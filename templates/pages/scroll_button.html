@@ -1,0 +1,86 @@
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <style>
+        /* Scroll-to-Top Button Styling */
+        .scroll-to-top {
+            position: fixed; /* Fix the button's position */
+            top: 20%; /* Adjust this based on your navbar height */
+            right: 20px; /* Distance from the right edge */
+            width: 50px; /* Button size */
+            height: 50px; /* Button size */
+            border-radius: 50%; /* Circular button */
+            background-color: #007bff; /* Blue background color */
+            color: #fff; /* White text color */
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px; /* Font size of the icon */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: opacity 0.3s, visibility 0.3s; /* Smooth transition */
+            visibility: hidden; /* Initially hidden */
+            opacity: 0; /* Initially invisible */
+            z-index: 9999; /* Ensure it is above other content */
+        }
+
+        /* Show button when scrolled down */
+        .scroll-to-top.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Animation for button */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .scroll-to-top {
+            animation: bounce 1s infinite; /* Apply bounce animation */
+        }
+    </style>
+</head>
+<body>
+    <!-- Your page content here -->
+
+    <!-- Scroll-to-Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top">
+        ↑
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var scrollToTopBtn = document.getElementById('scroll-to-top');
+
+            // Show the button when scrolled down 100px from the top
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 100) {
+                    scrollToTopBtn.classList.add('show');
+                } else {
+                    scrollToTopBtn.classList.remove('show');
+                }
+            });
+
+            // Scroll to the top smoothly when the button is clicked
+            scrollToTopBtn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+{% endblock content %}

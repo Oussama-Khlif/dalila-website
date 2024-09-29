@@ -1,0 +1,116 @@
+{% block content %}
+{% load static %}
+<!-- Messenger Bubble HTML -->
+<div id="messenger-bubble" class="messenger-bubble">
+    <a href="fb-messenger://user/351075598670471" target="_blank" class="messenger-button">
+        <span class="messenger-icon">💬</span>
+        <div class="message-container">
+            <div class="message-bubble">
+                <span class="message">عسلامة</span>
+            </div>
+        </div>
+    </a>
+</div>
+
+<style>
+    /* Messenger Button Styling */
+    .messenger-bubble {
+        position: fixed;
+        bottom: 20px; /* Distance from the bottom of the viewport */
+        right: 20px;  /* Distance from the right of the viewport */
+        z-index: 1000; /* Ensure it appears above other content */
+    }
+    
+    .messenger-button {
+        display: block;
+        background-color: #0078FF; /* Messenger blue color */
+        border-radius: 50%;
+        width: 60px; /* Width of the button */
+        height: 60px; /* Height of the button */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: white;
+        font-size: 24px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+        position: relative; /* Positioning for message container */
+    }
+    
+    /* Message Container Styling */
+    .message-container {
+        position: absolute;
+        bottom: 70px; /* Position above the bubble */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1001; /* Ensure message is above other elements */
+    }
+    
+    /* Speech Bubble Styling */
+    .message-bubble {
+        position: relative;
+        display: inline-block;
+        background-color: #fff; /* White background for message */
+        color: #000; /* Black text */
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-size: 14px;
+        white-space: nowrap; /* Prevent text wrapping */
+        max-width: 200px; /* Limit the width of the message bubble */
+        overflow-wrap: break-word; /* Break long words to avoid overflow */
+        visibility: hidden; /* Hide by default */
+        opacity: 0; /* Make invisible by default */
+        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    }
+    
+    /* Speech Bubble Arrow */
+    .message-bubble::after {
+        content: "";
+        position: absolute;
+        top: 100%; /* Position the arrow at the bottom of the bubble */
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 10px;
+        border-style: solid;
+        border-color: #fff transparent transparent transparent; /* Arrow color */
+    }
+    
+    /* Animation Keyframes */
+    @keyframes bubbleAppearDisappear {
+        0%, 100% {
+            visibility: hidden;
+            opacity: 0;
+        }
+        5%, 95% {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+    
+    /* Apply Animation */
+    .message-bubble {
+        animation: bubbleAppearDisappear 10s infinite; /* 10s for complete cycle, 5s visible, 5s hidden */
+    }
+    
+    
+    
+    
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageBubble = document.querySelector('.message');
+        
+        function resetAnimation() {
+            // Remove the animation class
+            messageBubble.classList.remove('animate');
+            // Re-add the animation class
+            void messageBubble.offsetWidth; // Trigger reflow
+            messageBubble.classList.add('animate');
+        }
+        
+        // Set interval to reset animation every 5 minutes (300000 milliseconds)
+        setInterval(resetAnimation, 1); // 5 minutes
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <section class="welcome-message">
+        <h1>Modifier votre photo de profil</h1>
+    </section>
+
+    <!-- Display Messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Display Current Profile Picture -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="Photo de Profil" style="
+                display: block;
+                margin: 0 auto;
+                width: 150px; /* Adjust width as needed */
+                height: 150px; /* Adjust height as needed */
+                border-radius: 50%; /* Makes the image rounded */
+                object-fit: cover; /* Ensures the image covers the circle without distortion */
+                border: 2px solid #ddd; /* Optional: Adds a border around the image */
+            ">
+        {% else %}
+            <p style="color: red;">Aucune photo de profil actuelle.</p>
+        {% endif %}
+        <span style="font-weight: bold; font-size: 1.2em;">{{ user.username }}</span>
+    </div>
+
+    <!-- Update Profile Picture Form -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'forms/custom_field.html' with field=profile_form.profile_picture %}
+        <button type="submit" name="update_profile" class="btn btn-secondary">Mettre à jour la photo de profil</button>
+    </form>
+    <!-- Delete Profile Picture Form -->
+    <form id="delete-profile-picture-form" method="post">
+        {% csrf_token %}
+        <button type="submit" name="delete_profile_picture" class="btn btn-secondary" onclick="return confirm('Êtes-vous sûr de vouloir supprimer la photo de profil ?');">Supprimer la photo de profil</button>
+    </form>
+    <br>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <section class="welcome-message">
+        <h1>Modifier votre nom d'utilisateur</h1>
+    </section>
+    <!-- Update Username Form -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ username_form.username.id_for_label }}" class="form-label">{{ username_form.username.label }}</label>
+            {{ username_form.username.errors }}
+            {{ username_form.username }}
+            {% if username_form.username.help_text %}
+                <small class="form-text text-muted">{{ username_form.username.help_text }}</small>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="{{ username_form.password.id_for_label }}" class="form-label">{{ username_form.password.label }}</label>
+            {{ username_form.password.errors }}
+            {{ username_form.password }}
+            {% if username_form.password.help_text %}
+                <small class="form-text text-muted">{{ username_form.password.help_text }}</small>
+            {% endif %}
+        </div>
+        <button type="submit" name="update_username" class="btn btn-secondary">Mettre à jour le nom d’utilisateur</button>
+    </form>
+    
+    <br>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+  <i class="fas fa-arrow-left"></i>
+</a>
+    <section class="welcome-message">
+        <h1>Modifier votre mot de passe</h1>
+    </section>
+    <!-- Update Password Form -->
+    <form method="post">
+        {% csrf_token %}
+        {% include 'forms/custom_field.html' with field=password_form.old_password %}
+        {% include 'forms/custom_field.html' with field=password_form.new_password1 %}
+        {% include 'forms/custom_field.html' with field=password_form.new_password2 %}
+        <button type="submit" name="update_password" class="btn btn-secondary">Changer le mot de passe</button>
+    </form>
+    <br>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <style>
+        .messages {
+            margin: 20px auto;
+            width: 80%; /* Adjust width as needed */
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+{% endblock %}

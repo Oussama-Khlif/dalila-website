@@ -1,0 +1,267 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Fixed Navbar Styling */
+        .navbar {
+            position: fixed; /* Keeps the navbar fixed at the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Ensures it stays above other content */
+            background-color: #fff; /* Navbar background color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for visibility */
+        }
+    
+        .navbar-nav .nav-link {
+            font-weight: bold;
+            font-size: 1.1em; /* Adjust size as needed */
+        }
+    
+        .navbar-brand img {
+            max-width: 130px; /* Keeps existing styling for brand image */
+        }
+    
+        .text-truncate {
+            display: flex;
+            align-items: center;
+            max-width: 150px; /* Adjust width as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 12px; /* Set font size to your desired size */
+            margin-right: 4px;
+        }
+    
+        .painting-name {
+            margin-left: 10px; /* Space between image and text */
+        }
+
+    
+
+
+
+        /* Dropdown animation */
+        .dropdown-menu {
+            display: block;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s, height 0.3s ease;
+            position: absolute;
+            width: 100%; /* Full width for larger screens */
+            left: 0;
+            height: 0; /* Start with height 0 */
+            overflow: hidden; /* Hide overflow */
+        }
+        
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            height: auto; /* Allow height to expand */
+        }
+        
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .dropdown-menu {
+                position: static; /* Static instead of relative for better flow */
+                width: 100%; /* Make sure it spans the full width */
+                padding: 0;
+                margin-top: 5px; /* Add a small margin to separate from the toggle */
+                box-sizing: border-box;
+            }
+        }
+        
+        /* Ensure dropdowns are visible and aligned on larger screens */
+        @media (min-width: 768px) {
+            .dropdown-menu {
+                width: auto; /* Auto width for desktop screens */
+                right: 0; /* Align the dropdown to the right edge */
+                left: auto; /* Ensure no left alignment for desktop */
+            }
+        }
+        
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdownToggle = document.getElementById('workshopsDropdown');
+            var dropdownMenu = dropdownToggle.nextElementSibling;
+        
+            dropdownToggle.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link behavior
+                event.stopPropagation(); // Stop click event from bubbling
+        
+                if (dropdownMenu.classList.contains('show')) {
+                    dropdownMenu.classList.remove('show');
+                } else {
+                    document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                        menu.classList.remove('show');
+                    });
+        
+                    dropdownMenu.classList.add('show');
+                }
+            });
+        
+            document.addEventListener('click', function(event) {
+                if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Logo de votre marque" class="img-fluid mb-2" style="max-width: 280px;">
+        </a>        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}">ACCUEIL</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="workshopsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ATELIERS
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="workshopsDropdown">
+                        <a class="dropdown-item" href="{% url 'paint' %}">PEINTURE</a>
+                        <a class="dropdown-item" href="{% url 'music' %}">MUSIQUE</a>
+                        <a class="dropdown-item" href="{% url 'robotics' %}">ROBOTIQUE</a>
+                        <a class="dropdown-item" href="{% url 'mental_calculation' %}">CALCUL MENTAL</a>
+                        <a class="dropdown-item" href="{% url 'calligraphy' %}">CALLIGRAPHIE</a>
+                        <a class="dropdown-item" href="{% url 'theater' %}">THÉÂTRE</a>
+                        <a class="dropdown-item" href="{% url 'languages' %}">LANGUES</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'art_gallery' %}">GALLERIE D'ART</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">À PROPOS DE NOUS</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <!-- Wishlist Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" style="margin-top:40px;" href="#" id="wishlistDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ❤️ Liste des Souhaits
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="wishlistDropdown">
+                            {% if user.wishlist.exists %}
+                                <ul class="list-group">
+                                    {% for painting in user.wishlist.all %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <a href="{% url 'painting_details' painting.id %}" class="d-flex align-items-center text-truncate">
+                                                <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" class="img-fluid" style="width: 50px; height: auto; margin-left: 10px;">
+                                                <span class="painting-name">{{ painting.name }}</span>
+                                            </a>                                            
+                                            <div class="d-flex align-items-center ml-auto">
+                                                <div class="d-flex align-items-center ml-auto">
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWishlist({{ painting.id }})">Retirer</button>
+                                                    <!-- Ensure this form is included and has the correct ID -->
+                                                    <form id="remove-form-{{ painting.id }}" action="{% url 'remove_from_wishlist' painting.id %}" method="post" style="display: none;">
+                                                        {% csrf_token %}
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="dropdown-divider"></div>
+                                <!-- Button to go to wishlist page -->
+                                <a class="dropdown-item text-center" href="{% url 'wishlist' %}">Voir la liste des souhaits</a>
+                            {% else %}
+                                <p class="dropdown-item">La liste est vide.</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown text-center">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Icône Utilisateur" style="
+                            display: block;
+                            margin: 0 auto;
+                            width: 60px; /* Adjust width to fit better in the navbar */
+                            height: 60px; /* Adjust height to fit the navbar */
+                            border-radius: 50%; /* Makes the image circular */
+                            object-fit: cover; /* Ensures the image covers the entire area without stretching */
+                            border: 2px solid #ddd; /* Optional border for styling */
+                        ">
+                        
+                            {% else %}
+                                <img src="{% static 'images/user_client.png' %}" alt="Icône Utilisateur" style="
+                                display: block;
+                                margin: 0 auto;
+                                width: 60px; /* Adjust width to fit better in the navbar */
+                                height: 60px; /* Adjust height to fit the navbar */
+                                border-radius: 50%; /* Makes the image circular */
+                                object-fit: cover; /* Ensures the image covers the entire area without stretching */
+                                border: 2px solid #ddd; /* Optional border for styling */
+                            ">
+                            {% endif %}
+                            <span>{{ user.username }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            {% if user.is_superuser %}
+                                <a class="dropdown-item" href="{% url 'myaccount' %}">🏠 Mon Compte</a>
+                                <a class="dropdown-item" href="{% url 'myclients' %}">👤 Mes Etudinats</a>
+                                <a class="dropdown-item" href="{% url 'my_ateliers' %}">🛠️ Mes Ateliers</a>
+                                <a class="dropdown-item" href="{% url 'list_media' %}">📸 Mes Photos</a>
+                                <a class="dropdown-item" href="{% url 'mypaintings' %}">🎨 Mes Tableaux</a>
+                                <a class="dropdown-item" href="{% url 'absences' %}">📝 Marquer Présences</a>
+                            {% endif %}
+                            {% if not user.is_superuser %}
+                            <a class="dropdown-item" href="{% url 'myaccount' %}">🏠 Mon Compte</a>
+                            <a class="dropdown-item" href="{% url 'mypaintings' %}">🎨 Mes Tableaux</a>
+                            <a class="dropdown-item" href="{% url 'view_absences' %}">📝 Mes Présences</a>
+                            <a class="dropdown-item" href="{% url 'absence_alert' %}">📢 Annoncer Absence</a>
+                            {% endif %}
+                            <div>
+                                <form method="post" action="{% url 'logout' %}" class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown"></div>
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">🔒 Déconnexion</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Se Connecter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Créer un compte</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    
+    
+    <script>
+        function removeFromWishlist(paintingId) {
+            // Find the form with the corresponding ID
+            var form = document.getElementById('remove-form-' + paintingId);
+    
+            // Check if the form exists
+            if (form) {
+                form.submit();
+            } else {
+                console.error('Form not found for painting ID:', paintingId);
+            }
+        }
+    </script>
+    
+</body>
+</html>

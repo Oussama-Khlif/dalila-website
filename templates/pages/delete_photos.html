@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 300px; /* Adjust this value as needed */
+    }
+    .media-image {
+        width: 100px;  /* Set desired width */
+        height: 100px;  /* Maintain aspect ratio */
+        margin-right: 10px;
+        object-fit: cover;  /* Ensures images cover the set dimensions */
+    }
+</style>
+
+<section class="welcome-message">
+    <h1 style="font-size:24px;">Supprimer des photos</h1>
+</section>
+
+{% if messages %}
+    <div class="alert alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <div class="list-group">
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <label for="select-all">Sélectionner tout</label>
+            <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"> 
+        </div>
+        {% for media in media_items %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                {% if media.file %}
+                    <!-- Check if the file is a video -->
+                    {% if media.file.name|lower|slice:"-3:" in 'mp4,avi,mov,wmv,flv,webm' %}
+                        <!-- Display video with spacing -->
+                        <video controls style="width: 100px; height: 100px; border-radius: 5px; object-fit: cover; margin-right: 10px;">
+                            <source src="{{ media.file.url }}" type="video/{{ media.file.name|lower|slice:"-3:" }}">
+                            Votre navigateur ne prend pas en charge la balise vidéo.
+                        </video>
+                    {% else %}
+                        <!-- Display image with same spacing -->
+                        <img src="{{ media.file.url }}" alt="{{ media.file.name }}" class="media-image" style="width: 100px; height: 100px; border-radius: 5px; object-fit: cover; margin-right: 10px;">
+                    {% endif %}
+                {% endif %}
+                <span class="truncate" title="{{ media.file.name }}">{{ media.file.name }}</span>
+                <input type="checkbox" name="media_ids" value="{{ media.id }}" style="margin-left: auto;" class="media-checkbox">
+            </div>
+        {% empty %}
+            <div class="list-group-item">Aucun média trouvé.</div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ?')">Supprimer les éléments sélectionnés</button>
+</form>
+
+
+
+<br>
+<a href="{% url 'list_media' %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script>
+    function toggleSelectAll(source) {
+        const checkboxes = document.querySelectorAll('.media-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked;
+        });
+    }
+</script>
+{% endblock content %}

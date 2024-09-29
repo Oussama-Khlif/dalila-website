@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+  <!-- Formulaire pour rechercher les enregistrements d'absences par matricule -->
+  <section class="welcome-message">
+    <h1>Voir vos absences</h1>
+    <p>Votre historique d'absences : Consultez ici les jours où vous étiez absent. Suivez vos absences et gardez un œil sur votre présence.</p>
+  </section>
+  <form method="post">
+    {% csrf_token %}
+    {{ search_form.as_p }}
+    <button type="submit" name="search_absence">Rechercher</button>
+  </form>
+
+  {% if absences is not None %}
+    {% if absences %}
+      <h3>Enregistrements d'Absences pour {{ absences.0.profile.name }} {{ absences.0.profile.last_name }}</h3>
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Statut</th>
+        </tr>
+        {% for absence in absences %}
+          <tr>
+            <td>{{ absence.date }}</td>
+            <td>
+              {% if absence.is_absent %}
+                Absent
+              {% else %}
+                Présent
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>Aucun enregistrement d'absence trouvé pour ce matricule.</p>
+    {% endif %}
+  {% endif %}
+
+  <br>
+  <div>
+    <p>Vous n'avez pas encore de matricule ? Contactez le 90308512 pour vous inscrire sur le site et obtenir le vôtre afin de consulter vos absences !</p>
+  </div>
+  {% endblock %}

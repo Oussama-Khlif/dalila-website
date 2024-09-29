@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<section class="welcome-message">
+  <h1>Modifier le Profil de {{ profile.name }}</h1>
+</section> 
+{% if creation_message %}
+<div class="alert alert-info" role="alert">
+    {{ creation_message }}
+</div>
+{% endif %}
+
+{% if form.non_field_errors %}
+<div class="alert alert-danger" role="alert">
+    {{ form.non_field_errors }}
+</div>
+{% endif %}
+
+{% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+{% endfor %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-secondary">Sauvegarder les modifications</button>
+  </form>
+
+  <br>
+  <a class="btn btn-secondary" href="{% url 'profile_details' matricule=profile.matricule %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock %}

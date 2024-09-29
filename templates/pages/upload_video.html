@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<body style="background-image: url('{% static 'images/gallery_bg.png' %}'); background-size: cover; background-position: center;">
+<section class="welcome-message">
+    <h1>Mettre à jour le video de la page principale</h1>
+</section>
+
+<!-- Video Upload/Edit Form -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Mettre à jour</button>
+
+    <!-- Display delete button if a video exists, and inline it below the "Mettre à jour" button -->
+    {% if video %}
+        <button type="submit" name="delete" value="{{ video.id }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')">Supprimer la vidéo</button>
+    {% endif %}
+</form>
+
+{% endblock content %}

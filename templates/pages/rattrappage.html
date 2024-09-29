@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="welcome-message">
+  <h1 style="font-size:25px;">Rattrapage pour {{ profile.name }} {{ profile.last_name }}</h1>
+</section>
+{% if messages %}
+{% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    
+    <!-- Formulaire pour définir la date de rattrapage -->
+    <div class="form-group">
+        <!-- Display the help text above the field -->
+        <label for="{{ form.rattrappage.id_for_label }}">Date et heure pour toute classe ou séance de rattrapage</label>
+        {{ form.rattrappage.errors }}
+        {{ form.rattrappage }}
+        <small class="form-text text-muted">{{ form.rattrappage.help_text }}</small>
+    </div>
+
+    <button type="submit" name="set_rattrappage" class="btn btn-secondary">Définir le Rattrapage</button>
+    <button type="submit" name="reset_rattrappage" class="btn btn-secondary">Réinitialiser le Rattrapage</button>
+</form>
+<br>
+
+<a href="{% url 'profile_details' matricule=matricule %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+  <i class="fas fa-arrow-left"></i>
+</a>
+<p class="text-primary">{{ message }}</p>
+{% endblock %}
