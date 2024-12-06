@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% include 'pages/display_events.html' %}
+
+        <section class="welcome-message">
+            <h1>Mes Statistiques</h1>
+            <p>Voir mes statistiques</p>
+        </section>
+        <div class="form-group" style="text-align: center;">
+            <img src="{% static 'images/profit.png' %}" 
+                alt="Alert Image" 
+                style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+                </div>
+        <h2>Bénéfice en fonction du Temps</h2>
+        <canvas id="profitChart" width="400" height="200"></canvas>
+
+        <script id="dates-data" type="application/json">{{ dates|safe }}</script>
+        <script id="profits-data" type="application/json">{{ profits|safe }}</script>
+
+        <script>
+            var dates = JSON.parse(document.getElementById('dates-data').textContent);
+            var profits = JSON.parse(document.getElementById('profits-data').textContent);
+
+            console.log("Dates:", dates);  
+            console.log("Bénéfices:", profits);  
+
+            var ctx = document.getElementById('profitChart').getContext('2d');
+            var profitChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Bénéfice au Fil du Temps',
+                        data: profits,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Bénéfice (DT)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+<br>
+            <div class="form-group" style="text-align: center;">
+                <img src="{% static 'images/stats.png' %}" 
+                    alt="Alert Image" 
+                    style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+                    <h2>Aperçu des Statistiques</h2>
+                    </div>
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Statistique</th>
+                        <th>Valeur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Profils</td>
+                        <td>{{ statistics.total_profiles }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Ateliers</td>
+                        <td>{{ statistics.total_ateliers }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Frais Étudiants</td>
+                        <td>{{ statistics.total_student_fee }} DT</td>
+                    </tr>
+                    <tr>
+                        <td>Total Frais Enseignants</td>
+                        <td>{{ statistics.total_teacher_fee }} DT</td>
+                    </tr>
+                    <tr>
+                        <td>Bénéfice Total</td>
+                        <td>{{ statistics.total_difference }} DT</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <h2>Aperçu des Visiteurs</h2>
+                <p><strong>Total des Visiteurs :</strong> {{ statistics.total_visitors }}</p>
+                
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Identité</th>
+                            <th>Adresse IP</th>
+                            <th>Dernière Heure de Visite</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for visitor in visitor_ips %}
+                            <tr style="background-color: {% if visitor.is_me %}#FFCCCC{% else %}inherit{% endif %};">
+                                <td>
+                                    <span><strong>{% if visitor.is_me %}Moi{% else %}Visiteur{% endif %}</strong></span>
+                                </td>
+                                <td>{{ visitor.ip_address }}</td>
+                                <td>{{ visitor.visit_time|date:"Y-m-d H:i:s" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">Aucun visiteur enregistré pour le moment.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        <a href="{% url 'index' %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+{% endblock content %}

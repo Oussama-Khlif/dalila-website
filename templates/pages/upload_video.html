@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/display_events.html' %}
+
+<body style="background-image: url('{% static 'images/gallery_bg.png' %}'); background-size: cover; background-position: center;">
+<section class="welcome-message">
+    <h1>Video de la page principale</h1>
+    <p>Ajoutez ou modifiez le flux vidéo de la page principale</p>
+</section>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Mettre à jour</button>
+
+    {% if video %}
+        <button type="submit" name="delete" value="{{ video.id }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')">Supprimer</button>
+    {% endif %}
+</form>
+<br>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock content %}

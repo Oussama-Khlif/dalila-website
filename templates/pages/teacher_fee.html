@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="card-body text-center">
+
+    <div class="d-flex flex-column align-items-center">
+        <section class="welcome-message mb-4">
+            <h1 class="text-center">Détails de facture de {{ profile.name }} {{ profile.last_name }}</h1>
+        </section>
+    </div>
+
+    <div class="mb-3">
+        <img src="{% static 'images/bill.png' %}" 
+            alt="Facture" 
+            class="img-fluid"
+            style="width: 110px; height: 110px; object-fit: contain; display: block; margin: 0 auto;" />
+        <h3 class="text-center" style="margin-top:10px;">Facture</h3>
+    </div>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% else %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+<div class="card-body" style="padding:10px;">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Statistique</th>
+                    <th class="text-center">Valeur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Présences</td>
+                    <td class="text-center">{{ presence_count }}</td>
+                </tr>
+                <tr>
+                    <td>Absences</td>
+                    <td class="text-center">{{ absence_count }}</td>
+                </tr>
+                <tr class="table-active fw-bold">
+                    <td>Total</td>
+                    <td class="text-center">{{ total_count }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center" style="margin-top:10px;">
+    <div class="col-md-6 col-lg-3">
+        <div class="finance-card">
+            <div class="card-header">
+                <div class="icon-wrapper bg-secondary-subtle">
+                    <i class="fas fa-dollar-sign text-secondary"></i>
+                </div>
+                <h6 class="label">Prix de l'heure</h6>
+            </div>
+            <div class="content">
+                <div class="amount">
+                    <span class="value">{{ fee_per_hour|floatformat:2 }}</span>
+                    <span class="currency">DT</span>
+                </div>
+                <a href="{% url 'payment_history' profile.matricule %}" class="btn btn-secondary w-100 shadow-sm">
+                    <i class="fas fa-money-check-alt me-2"></i> Historique de Paiements
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="finance-card">
+            <div class="card-header">
+                <div class="icon-wrapper bg-success-subtle">
+                    <i class="fas fa-file-invoice text-success"></i>
+                </div>
+                <h6 class="label">Total Frais</h6>
+            </div>
+            <div class="content">
+                <div class="amount">
+                    <span class="value">{{ total_fee|floatformat:2 }}</span>
+                    <span class="currency">DT</span>
+                </div>
+            </div>
+            <button id="confirm-payment" class="btn btn-success shadow-sm custom-btn" 
+            onclick="return confirmPayment()">
+            <i class="fas fa-file-invoice"></i> Confirmer le paiement
+            </button>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="finance-card">
+            <div class="card-header">
+                <div class="icon-wrapper bg-secondary-subtle">
+                    <i class="fas fa-clock text-secondary"></i>
+                </div>
+                <h6 class="label">Temps travaillé</h6>
+            </div>
+            <div class="content">
+                <div class="amount">
+                    <span class="value">{{ total_hours }}</span>
+                    <span class="currency">h {{ total_minutes }}m</span>
+                </div>
+            </div>
+            <a class="btn btn-secondary w-100" href="{% url 'absences_details' matricule=profile.matricule %}">
+                <i class="fas fa-history"></i> Historique de présences
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="align-items-center" style="margin:15px;">
+    <form id="payment-form" method="post" action="{% url 'clear_absences_teacher' profile.matricule %}" class="d-none">
+        {% csrf_token %}
+    </form>
+
+    <a class="btn btn-secondary shadow-sm" href="{% url 'profile_details' profile.matricule %}" style="margin-left:10px;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+<style>
+    .finance-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .finance-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .icon-wrapper i {
+        font-size: 1.5rem;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .label {
+        color: #6c757d;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .amount {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .currency {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-radius: 10px;
+        border: none;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .finance-card {
+            padding: 1.25rem;
+        }
+
+        .icon-wrapper {
+            width: 40px;
+            height: 40px;
+        }
+
+        .icon-wrapper i {
+            font-size: 1.25rem;
+        }
+
+        .value {
+            font-size: 1.75rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1rem;
+        }
+    }
+    </style>
+<script>
+function confirmPayment() {
+    if (confirm('Êtes-vous sûr de vouloir confirmer le paiement pour ce profil ?')) {
+        document.getElementById('payment-form').submit();
+    }
+    return false; 
+}
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+<div id="editNotesModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <form id="editNotesForm" action="{% url 'edit_profile_notes' matricule=profile.matricule %}" method="POST">
+            {% csrf_token %}
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Ajouter des notes </h2>
+            <label for="id_notes">Notes:</label>
+            <textarea name="notes" id="id_notes" rows="5" cols="50">{{ profile.notes }}</textarea>
+            
+            <br><br>
+            <button type="submit">Enregister</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('editNotesModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('editNotesModal').style.display = 'none';
+    }
+
+    document.getElementById("editNotesForm").onsubmit = function(event) {
+        event.preventDefault();  
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeModal();
+            } else {
+                console.error("Error:", JSON.stringify(data.errors));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    };
+</script>
+
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: transparent; 
+        border: none; 
+        margin: 15% auto;
+        width: 100%; 
+    }
+
+    .close-btn {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        cursor: pointer;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: black;
+    }
+</style>

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    @media (max-width: 576px) {
+        .btn-secondary {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div>
+    <section class="welcome-message">
+        <h1 style="font-size:25px;">Historique des Paiements</h1>
+    </section>
+    <div class="form-group" style="text-align: center;">
+        <img src="{% static 'images/history.png' %}"
+            alt="Payment History" 
+            style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+    </div>
+    <p>{{ profile.name }} {{ profile.last_name }}</p>
+    <p>Matricule : {{ profile.matricule }}</p>
+    {% if profile.role != 'teacher' %}
+    <p>Type d'inscription : {{ profile.registration_type }}</p>
+    {% endif %}
+
+    <div class="table-responsive" style="padding:10px;">
+        <table class="table table-secondary">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Date de Paiement</th>
+                    <th>Montant Payé</th>
+                    <th>Type de Facture</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                    <tr id="payment-{{ payment.id }}">
+                        <td>{{ payment.payment_date|date:"d F Y H:i" }}</td>
+                        <td>{{ payment.amount_paid }} DT</td>
+                        <td>{{ payment.get_invoice_type_display }}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" style="text-align: center;" onclick="deletePayment({{ payment.id }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">Aucun paiement trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    
+    <a href="{% if profile.role != 'teacher' %}{% url 'fee_details' profile.matricule %}{% else %}{% url 'teacher_fee' profile.matricule %}{% endif %}" 
+    class="btn btn-secondary" 
+    style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+     <i class="fas fa-arrow-left"></i>
+ </a>
+ 
+</div>
+
+<script>
+function deletePayment(paymentId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce paiement ?')) {
+        fetch("{% url 'payment_history' profile.matricule %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ payment_id: paymentId, delete_payment: true })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('payment-' + paymentId).remove();
+                alert("Le paiement a été supprimé avec succès.");
+            } else {
+                alert("Erreur lors de la suppression du paiement : " + data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert("Erreur lors de la suppression du paiement.");
+        });
+    }
+}
+</script>
+
+{% endblock content %}

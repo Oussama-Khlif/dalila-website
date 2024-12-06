@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromarium Cultural Center</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            overflow-x: hidden;
+            font-family: 'Rubik', sans-serif !important; 
+        }
+
+        h1, h2, h3, p, a {
+            font-family: 'Rubik', sans-serif !important; 
+        }
+
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(241, 241, 241, 0.95);
+            padding: 20px;
+            text-align: center;
+            z-index: 99999; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .cookie-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .cookie-button:hover {
+            background-color: #45a049;
+        }
+
+        .terms-link {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .terms-link:hover {
+            color: #0056b3;
+        }
+
+        .modal {
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 99999 !important; 
+        }
+
+        .modal-dialog {
+            max-width: 1000px !important; 
+            width: 90% !important; 
+            margin: auto; 
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        .modal-backdrop {
+            z-index: 99998 !important; 
+            background-color: rgba(0, 0, 0, 0.5) !important; 
+        }
+
+        .modal-body {
+            max-height: 50vh; 
+            overflow-y: auto; 
+        }
+
+        .modal-title {
+            font-size: 1.5rem; 
+        }
+
+        @media (max-width: 768px) {
+            .modal-title {
+                font-size: 1rem; 
+            }
+
+            .modal-dialog {
+                width: 95% !important; 
+                margin: auto; 
+            }
+        }
+
+        .modal-header .btn-close {
+            z-index: 1050; 
+            position: absolute; 
+            right: 1rem; 
+            top: 1rem; 
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .row {
+            margin-left: 0; 
+            margin-right: 0; 
+        }
+        .social-media {
+            text-align: center;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px; 
+        }
+
+        .social-icon {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin: 10px; 
+        }
+
+        .social-icon img,
+        .social-icon i {
+            width: 40px; 
+            height: auto; 
+            transition: transform 0.3s; 
+        }
+
+        .social-icon img:hover,
+        .social-icon i:hover {
+            transform: scale(1.1); 
+        }
+
+        .social-icon span {
+            margin-top: 5px; 
+            font-size: 14px; 
+            color: #333; 
+            text-align: center; 
+        }
+        @media (max-width: 600px) {
+            .social-icons {
+                gap: 5px; 
+            }
+
+    </style>
+</head>
+
+<body style="background-image: url('{% static 'images/bg.png' %}'); background-size: cover; background-repeat: no-repeat; background-position: center;" >
+    {% include 'parts/navbar.html' %}
+
+    <div class="container">
+        {% block content %}{% endblock %}        
+        <hr> 
+        <section class="social-media">
+            <div class="text-center mb-3">
+                <i class="fas fa-globe fa-2x text-dark rounded-circle p-2" style="background-color: #fff; border: 2px solid #000;"></i>
+            </div>
+            <h2 class="mb-4" style="font-size:20px;">Suivez nos pages Facebook, Instagram, et YouTube pour rester informé de nos nouveautés et événements !</h2>
+            <div class="social-icons">
+                <div class="social-icon">
+                    <a href="https://www.facebook.com/Chromarium?mibextid=ZbWKwL" target="_blank">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" />
+                    </a>
+                    <span>Facebook</span>
+                </div>
+                <div class="social-icon">
+                    <a href="https://www.instagram.com/chromarium" target="_blank">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" />
+                    </a>
+                    <span>Instagram</span>
+                </div>
+                <div class="social-icon">
+                    <a href="https://www.youtube.com/channel/YOUR_YOUTUBE_CHANNEL" target="_blank">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube" style="width: 50px; height: 35px; margin-top:5px;"/>
+                    </a>
+                    <span>YouTube</span>
+                </div>
+                <div class="social-icon">
+                    <a href="https://maps.app.goo.gl/6bcfRP5apV7BwH9e8" target="_blank">
+                        <i class="fas fa-map-marker-alt" style="font-size: 40px; color: red;"></i>
+                    </a>
+                    <span>Localisation</span>
+                </div>
+            </div>
+        </section>
+
+        <hr> 
+                <section>
+                <div class="text-center mb-3">
+                    <i class="fas fa-phone fa-2x text-dark rounded-circle p-2" style="background-color: #fff; border: 2px solid #000;"></i>
+                </div>
+                <h2>Contactez-Nous</h2>
+                <p>Si vous avez des questions ou souhaitez obtenir plus d'informations sur nos ateliers, veuillez nous contacter.</p>
+                <ul>
+                    <p>Email : <a href="mailto:info@chromariumcenter.com">bmdalila@gmail.com</a></p>
+                    <p>Téléphone : 90308512</p>
+                    <p>Adresse : M'saken Sousse, Tunisie</p>
+                </ul>
+                </section>
+                <hr> 
+
+                <section>
+                    <i class="bi bi-info-circle fa-3x text-dark" style="background-color: #fff;"></i>
+                <h2>À Propos de Nous</h2>
+                <p>Au Centre Culturel Chromarium, nous nous engageons à offrir une gamme diversifiée d'expériences culturelles et éducatives. Nos programmes incluent des ateliers de peinture, de musique, de robotique, de calcul mental et de calligraphie, conçus pour inspirer et engager des personnes de tous âges.</p>
+                </section>
+    </div>
+
+    <div id="cookie-consent" class="cookie-consent">
+        <p>
+            Nous utilisons des cookies pour améliorer votre expérience. En continuant à naviguer sur notre site, vous acceptez notre utilisation des cookies. 
+            <br><span class="terms-link" data-bs-toggle="modal" data-bs-target="#termsModal">Voir nos conditions générales</span>
+        </p>
+        <button id="accept-cookies" class="cookie-button">Accepter</button>
+        <button id="reject-cookies" class="cookie-button">Refuser</button>
+    </div>
+
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Conditions Générales</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="mb-4">Bienvenue au Centre Culturel Chromarium</h6>
+                <p>En utilisant nos services, vous acceptez les termes et conditions suivants :</p>
+                <ul class="list-unstyled">
+                    <li class="mb-4"><strong>Acceptation des Termes :</strong> En accédant à ou en utilisant le site web et les services du Centre Culturel Chromarium, vous acceptez d'être lié par ces Conditions Générales.</li>
+                    <li class="mb-4"><strong>Utilisation des Services :</strong> Nos services sont destinés à un usage personnel et non commercial. Vous vous engagez à ne pas utiliser abusivement le contenu ou les services fournis.</li>
+                    <li class="mb-4"><strong>Propriété Intellectuelle :</strong> Tout le contenu de ce site, y compris les textes, graphiques, logos et images, est la propriété du Centre Culturel Chromarium et est protégé par les lois sur les droits d'auteur.</li>
+                    <li class="mb-4"><strong>Comportement des Utilisateurs :</strong> Vous vous engagez à utiliser nos services de manière conforme à toutes les lois et réglementations applicables.</li>
+                    <li class="mb-4"><strong>Confidentialité :</strong> Votre utilisation de nos services est également régie par notre Politique de Confidentialité.</li>
+                    <li class="mb-4"><strong>Modifications :</strong> Nous nous réservons le droit de modifier ces termes à tout moment. Votre utilisation continue de nos services après les modifications constitue une acceptation de ces changements.</li>
+                    <li class="mb-4"><strong>Résiliation :</strong> Nous nous réservons le droit de résilier ou de suspendre l'accès à nos services pour toute raison et sans préavis.</li>
+                    <li class="mb-4"><strong>Politique de Remboursement :</strong> Aucun remboursement ne sera accordé pour nos ateliers, sauf si vous participez à un atelier de musique (instruments) et que vous nous avez informés via le site web. Dans ce cas, un remboursement pourra être envisagé.</li>
+                </ul>
+                <p class="mt-4">Pour toute question concernant ces Conditions Générales, veuillez nous contacter à bmdalila@gmail.com</p>
+            </div>
+            <br>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <br>
+                <br>
+        </div>
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            if (!getCookie('cookies_accepted')) {
+                $('#cookie-consent').show();
+            } else {
+                $('#cookie-consent').hide();
+            }
+
+            $('#accept-cookies').click(function() {
+                setCookie('cookies_accepted', 'true', 365);
+                $('#cookie-consent').hide();  
+            });
+
+            $('#reject-cookies').click(function() {
+                setCookie('cookies_accepted', 'false', 365);
+                $('#cookie-consent').hide();  
+            });
+
+            function setCookie(name, value, days) {
+                var expires = "";
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie = name + "=" + (value || "") + expires + "; path=/";
+            }
+
+            function getCookie(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for(var i = 0; i < ca.length; i++) {
+                    var c = ca[i].trim();
+                    if (c.indexOf(nameEQ) == 0) {
+                        return c.substring(nameEQ.length);
+                    }
+                }
+                return null;
+            }
+        });
+    </script>
+
+    {% include 'parts/footer.html' %}
+</body>
+</html>

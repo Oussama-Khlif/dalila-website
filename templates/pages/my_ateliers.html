@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% include 'pages/display_events.html' %}
+
+<div>
+    <section class="welcome-message">
+        <h1>Mes ateliers</h1>
+        <p>Voir et gérer mes ateliers</p>
+    </section>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% else %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <a href="{% url 'add_atelier' %}" class="btn btn-success" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+        <i class="fas fa-plus"></i>
+    </a>
+    <div class="custom-table-responsive" style="padding:10px;">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nom</th>
+                    <th>Prix de l'atelier</th>
+                    <th>Prix de l'enseignant</th>
+                    <th>Durée</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="atelier-list">
+                {% for atelier in ateliers %}
+                    <tr class="mobile-card">
+                        <td data-label="Nom">{{ atelier.name }}</td>
+                        <td data-label="Prix de l'atelier">{{ atelier.price }} DT</td>
+                        <td data-label="Prix de l'enseignant">{{ atelier.price_teacher }} DT</td>
+                        <td data-label="Durée">{{ atelier.duration }} minutes</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <a class="btn btn-secondary" href="{% url 'edit_atelier' atelier.pk %}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-danger" type="button" data-pk="{{ atelier.pk }}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            <form id="delete-form-{{ atelier.pk }}" action="{% url 'delete_atelier' atelier.pk %}" method="post" style="display:none;">
+                                {% csrf_token %}
+                                <input type="hidden" name="pk" value="{{ atelier.pk }}">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="text-center mt-4 mb-5">
+    <a class="btn btn-secondary" href="{% url 'index' %}">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+<style>
+    .custom-table-responsive {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+
+    @media screen and (max-width: 768px) {
+        .table {
+            display: block;
+        }
+        
+        .table thead {
+            display: none;
+        }
+        
+        .table tbody, .table tr, .table td {
+            display: block;
+            width: 100%;
+        }
+        
+        .mobile-card {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            background: #fff;
+        }
+        
+        .mobile-card td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.5rem;
+        }
+        
+        .mobile-card td:before {
+            content: attr(data-label);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .mobile-card td:last-child {
+            border-bottom: none;
+        }
+    }
+        .table {
+            border: none;
+        }
+
+        .table td {
+            border: none;
+        }
+
+        .action-buttons {
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 14px;
+        }
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 38px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.btn-danger').on('click', function() {
+            var pk = $(this).data('pk');
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet atelier ?')) {
+                $('#delete-form-' + pk).submit();
+            }
+        });
+    });
+</script>
+{% endblock content %}

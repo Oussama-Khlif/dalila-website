@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="welcome-message">
+  <h1>Modifier le Profil de {{ profile.name }}</h1>
+</section> 
+
+{% if creation_message %}
+<div class="alert alert-info" role="alert">
+    {{ creation_message }}
+</div>
+{% endif %}
+
+{% if messages %}
+{% for message in messages %}
+    <div class="alert 
+                {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" 
+        role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% endif %}
+
+{% if form.non_field_errors %}
+<div class="alert alert-danger" role="alert">
+    {{ form.non_field_errors }}
+</div>
+{% endif %}
+
+{% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+{% endfor %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group" style="text-align: center;">
+      <img id="profileImagePreview" 
+          src="{% if form.instance.profile_picture %}{{ form.instance.profile_picture.url }}{% else %}{% static 'images/edit.png' %}{% endif %}" 
+          alt="Profile Preview" 
+          style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto; cursor: pointer; border-radius: 50%;" 
+          onclick="document.getElementById('{{ form.profile_picture.auto_id }}').click()" />
+      <h2>Modifier Profil</h2>
+    </div>
+    <div class="form-group">
+        {{ form.profile_picture.label_tag }}
+        <div>
+            {{ form.profile_picture }}
+        </div>
+        <script>
+            document.getElementById('{{ form.profile_picture.auto_id }}').className = 'form-control';
+            document.getElementById('{{ form.profile_picture.auto_id }}').setAttribute('onchange', 'previewProfileImage(this)');
+        </script>
+      </div>
+      
+    {{ form.name.label_tag }}
+    {{ form.name }}<br>
+    {{ form.last_name.label_tag }}
+    {{ form.last_name }}<br>
+    {{ form.email.label_tag }}
+    {{ form.email }}<br>
+    {{ form.parent_number.label_tag }}
+    {{ form.parent_number }}<br>
+    {{ form.date_of_birth.label_tag }}
+    {{ form.date_of_birth }}<br>
+    {{ form.role.label_tag }}
+    {{ form.role }}<br>
+    {{ form.groups.label_tag }}
+    {{ form.groups }}<br>
+    {{ form.registration_type.label_tag }}
+    {{ form.registration_type }}<br>
+    
+    <div class="form-group">
+        <label for="{{ form.ateliers.id_for_label }}">Ateliers inscrits</label>
+        <div class="atelier-dropdown">
+            <button type="button" class="atelier-dropbtn">Sélectionner Ateliers</button>
+            <div class="atelier-dropdown-content">
+                {% for atelier in form.ateliers.field.queryset %}
+                    <label>
+                        <input type="checkbox" name="ateliers" value="{{ atelier.id }}" data-price="{{ atelier.price }}"
+                            {% if atelier.id in form.ateliers.value %} checked {% endif %}>
+                        {{ atelier.name }} ({{ atelier.price }} DT)
+                    </label><br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+  
+
+  
+    <button type="submit" class="btn btn-secondary">Sauvegarder les modifications</button>
+  </form>
+  
+  <script>
+  function previewProfileImage(input) {
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          
+          reader.onload = function(e) {
+              document.getElementById('profileImagePreview').src = e.target.result;
+          }
+          
+          reader.readAsDataURL(input.files[0]);
+      }
+  }
+  </script>
+
+<br>
+<a class="btn btn-secondary" href="{% url 'profile_details' matricule=profile.matricule %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+<style>
+  .atelier-dropdown {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+  }
+
+  .atelier-dropbtn {
+      background-color: transparent;
+      color: black;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background-color 0.3s;
+  }
+
+  .atelier-dropbtn:hover {
+      background-color: #f0f0f0;
+  }
+
+  .atelier-dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      width: 100%;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+      left: 0;
+  }
+
+  .atelier-dropdown-content label {
+      display: block;
+      padding: 8px 16px;
+  }
+
+  .atelier-dropdown-content label:hover {
+      background-color: #f1f1f1;
+  }
+
+  .atelier-dropdown:hover .atelier-dropdown-content {
+      display: block;
+  }
+
+  .atelier-dropdown-content input {
+      margin-right: 10px;
+  }
+</style>
+
+<script>
+  const dropdownButton = document.querySelector('.atelier-dropbtn');
+  const dropdownContent = document.querySelector('.atelier-dropdown-content');
+
+  dropdownButton.onclick = function() {
+      dropdownContent.classList.toggle('show');
+  }
+
+  window.onclick = function(event) {
+      if (!event.target.matches('.atelier-dropbtn')) {
+          dropdownContent.classList.remove('show');
+      }
+  }
+</script>
+
+{% endblock %}

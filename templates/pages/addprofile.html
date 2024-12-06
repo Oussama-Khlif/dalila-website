@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div>
+<section class="welcome-message">
+    <h1>Ajouter profil</h1>
+    <p>Ajoutez de nouveaux membres à notre communauté</p>
+</section>
+
+{% if creation_message %}
+    <div class="alert {% if message_type == 'success' %}alert-success{% elif message_type == 'error' %}alert-danger{% else %}alert-info{% endif %}" role="alert">
+        {{ creation_message }}
+    </div>
+{% endif %}
+
+<div class="alert alert-success total-fee" id="total-fee-alert" style="margin-top: 20px; text-align: center; font-weight: bold;">
+    <p style="margin: 0;">Facture:</p>
+    <span id="total-fee-value">0.00</span> DT
+</div>
+
+<form method="post" enctype="multipart/form-data" class="profile-form" id="profile-form">
+    {% csrf_token %}
+    <div class="form-group" style="text-align: center;">
+        <img id="profileImagePreview" 
+            src="{% static 'images/user.png' %}" 
+            alt="Profile Preview" 
+            style="width: 120px; height: 120px; object-fit: cover; margin: 0 auto; cursor: pointer; border-radius: 50%;" 
+            onclick="document.getElementById('{{ profile_form.profile_picture.auto_id }}').click();" />
+        <h2>Ajouter profil</h2>
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.profile_picture.id_for_label }}">Photo de profil</label>
+        <div>
+            {{ profile_form.profile_picture }}
+        </div>
+        <script>
+            document.getElementById('{{ profile_form.profile_picture.auto_id }}').className = 'form-control';
+            document.getElementById('{{ profile_form.profile_picture.auto_id }}').setAttribute('onchange', 'previewProfileImage(this)');
+        </script>
+    </div>
+
+<script>
+function previewProfileImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('profileImagePreview').src = e.target.result;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+    
+    <div class="form-group">
+        <label for="{{ profile_form.name.id_for_label }}">Prénom</label>
+        {{ profile_form.name }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.last_name.id_for_label }}">Nom</label>
+        {{ profile_form.last_name }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.email.id_for_label }}">Email</label>
+        {{ profile_form.email }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.parent_number.id_for_label }}">Numéro de téléphone</label>
+        {{ profile_form.parent_number }}
+    </div>    
+
+    <div class="form-group">
+        <label for="{{ profile_form.date_of_birth.id_for_label }}">Date de naissance</label>
+        {{ profile_form.date_of_birth }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.role.id_for_label }}">Rôle</label>
+        {{ profile_form.role }} 
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.groups.id_for_label }}">Groupes</label>
+        {{ profile_form.groups }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.registration_type.id_for_label }}">Type d'inscription</label>
+        {{ profile_form.registration_type }}
+    </div> 
+
+    <div class="form-group">
+        <label for="{{ profile_form.ateliers.id_for_label }}">Ateliers inscrits</label>
+        <div class="atelier-dropdown">
+            <button type="button" class="atelier-dropbtn">Sélectionner Ateliers</button>
+            <div class="atelier-dropdown-content">
+                {% for atelier in ateliers %}
+                    <label>
+                        <input type="checkbox" name="ateliers" value="{{ atelier.id }}" data-price="{{ atelier.price }}"
+                            {% if atelier.name == "Peinture" %} id="atelier-peinture"{% endif %}> 
+                        {{ atelier.name }} ({{ atelier.price }} DT)
+                    </label><br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .atelier-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .atelier-dropbtn {
+            background-color: transparent;
+            color: black;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.3s;
+        }
+
+        .atelier-dropbtn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .atelier-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            max-height: 200px;
+            overflow-y: auto;
+            left: 0;
+        }
+
+        .atelier-dropdown-content label {
+            display: block;
+            padding: 8px 16px;
+        }
+
+        .atelier-dropdown-content label:hover {
+            background-color: #f1f1f1;
+        }
+
+        .atelier-dropdown:hover .atelier-dropdown-content {
+            display: block;
+        }
+
+        .atelier-dropdown-content input {
+            margin-right: 10px;
+        }
+    </style>
+
+    <script>
+
+        const dropdownButton = document.querySelector('.atelier-dropbtn'); 
+        const dropdownContent = document.querySelector('.atelier-dropdown-content'); 
+
+        dropdownButton.onclick = function() {
+            dropdownContent.classList.toggle('show');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.atelier-dropbtn')) { 
+                dropdownContent.classList.remove('show');
+            }
+        }
+    </script>
+
+    <button type="submit" name="addprofile_submit">Créer le Profil</button>
+</form>
+
+<br>
+<a class="btn btn-secondary" href="{% url 'myclients' %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a> 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileForm = document.getElementById('profile-form');
+        const totalFeeValue = document.getElementById('total-fee-value');
+
+        function calculateTotalFee() {
+            let totalFee = 0; 
+            const registrationType = profileForm.registration_type.value;
+
+            const role = profileForm.querySelector('select[name="role"]').value; 
+
+            if (role === 'teacher') {
+                totalFee = 0; 
+                totalFeeValue.textContent = totalFee.toFixed(2); 
+                return; 
+            }
+
+            if (registrationType === 'bimestriel') {
+                totalFee += 25.00; 
+            } else if (registrationType === 'annual') {
+                totalFee += 50.00; 
+            }
+
+            const dobValue = profileForm.date_of_birth.value; 
+            const dob = new Date(dobValue);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDifference = today.getMonth() - dob.getMonth();
+
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            const selectedAteliers = Array.from(profileForm.querySelectorAll('input[name="ateliers"]:checked'));
+            selectedAteliers.forEach(atelier => {
+                const atelierPrice = parseFloat(atelier.dataset.price); 
+
+                if (atelier.id === "atelier-peinture") { 
+                    totalFee += atelierPrice; 
+
+                    if (age > 12) {
+                        totalFee += 5; 
+                    } 
+                    if (role === 'none') { 
+                        totalFee += 25; 
+                    }
+                } else {
+                    totalFee += atelierPrice; 
+                }
+            });
+
+            totalFeeValue.textContent = totalFee.toFixed(2); 
+        }
+
+        profileForm.registration_type.addEventListener('change', calculateTotalFee);
+        profileForm.addEventListener('change', function(e) {
+            if (e.target.name === 'ateliers' || e.target.name === 'date_of_birth' || e.target.name === 'role') {
+                calculateTotalFee();
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const totalFeeAlert = document.getElementById('total-fee-alert');
+        const originalOffset = totalFeeAlert.offsetTop; 
+
+        window.addEventListener('scroll', function() {
+
+            if (window.scrollY > originalOffset) {
+                totalFeeAlert.style.position = 'fixed';
+                totalFeeAlert.style.bottom = '20px'; 
+                totalFeeAlert.style.right = '20px'; 
+                totalFeeAlert.style.zIndex = '1000'; 
+                totalFeeAlert.style.transform = 'none'; 
+            } else {
+
+                totalFeeAlert.style.position = 'relative';
+                totalFeeAlert.style.bottom = 'auto';
+                totalFeeAlert.style.right = 'auto';
+            }
+        });
+    });
+</script>
+
+{% endblock %}

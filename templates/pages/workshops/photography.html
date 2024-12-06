@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+{% include 'pages/scroll_button.html' %}
+{% include 'pages/display_events.html' %}
+
+  <section class="welcome-message">
+    <h1>Atelier de {{atelier.name}}</h1>
+  </section>    
+      <section>
+        <p>
+          انضم إلى نادي التصوير الفوتوغرافي، حيث نحتفل بفن التصوير ونساعدك في اكتشاف عالم الإبداع من خلال العدسة! إذا كنت شغوفًا بالتقاط اللحظات الجميلة وترغب في تحسين مهاراتك، فإن هذا النادي هو المكان المناسب لك</h3>
+
+        </p>
+    </section>
+
+    
+    <section class="content-sections">
+      <div>
+        <div class="row align-items-center mb-4">
+          <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex justify-content-center">
+            <div class="image-container">
+              <img src="{% static 'images/photo1.jpg' %}" alt="Description of Image 1" class="img-fluid rounded">
+            </div>
+          </div>
+          <div class="col-12 col-md-7">
+            <div class="text-container">
+            <h3>  تقدم ورشة نادي التصوير الفوتوغرافي دروساً شاملة تناسب جميع المستويات، من المبتدئين إلى المتقدمين. ستتعلم أساسيات التصوير، بما في ذلك تقنيات الإضاءة، والتأليف، واستخدام الكاميرات الرقمية. بفضل توجيهات المدربين المحترفين، ستكتسب المهارات اللازمة لالتقاط الصور المذهلة التي تعكس رؤيتك الفنية</h3>
+
+            </div>
+          </div>
+        </div>
+        
+        <div class="row align-items-center mb-4">
+          <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex justify-content-center">
+            <div class="image-container">
+              <img src="{% static 'images/photo2.jpg' %}" alt="Description of Image 2" class="img-fluid rounded">
+            </div>
+          </div>
+          <div class="col-12 col-md-7">
+            <div class="text-container">
+              <h3>   ستتاح لك الفرصة للمشاركة في جلسات تصوير عملية، حيث يمكنك تطبيق ما تعلمته في بيئة حية. نحن نؤمن بأهمية التعلم من خلال الممارسة، لذا ستعمل مع زملائك في النادي على مشاريع تصوير جماعية وموضوعات مختلفة. ستساعدك هذه التجارب على تطوير أسلوبك الخاص وتعزيز ثقتك بنفسك كمصور</h3>
+
+            </div>
+          </div>
+        </div>
+    
+        <div class="row align-items-center">
+          <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex justify-content-center">
+            <div class="image-container">
+              <img src="{% static 'images/photo3.jpg' %}" alt="Description of Image 3" class="img-fluid rounded">
+            </div>
+          </div>
+          <div class="col-12 col-md-7">
+            <div class="text-container">
+              <h3> بالإضافة إلى ذلك، ينظم نادي التصوير الفوتوغرافي معارض دورية لعرض أعمال المشاركين، مما يمنحك فرصة لمشاركة إبداعاتك مع المجتمع. نحتفل بتنوع أساليب التصوير ونعزز من التواصل بين الأعضاء، حيث يمكنك التفاعل مع المصورين الآخرين وتبادل الأفكار والتقنيات. انضم إلينا في نادي التصوير الفوتوغرافي، واكتشف كيفية تحويل لحظات الحياة إلى أعمال فنية خالدة!
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <style>
+      .content-sections {
+        padding: 2rem 0;
+      }
+      .text-container {
+        padding: 1rem;
+      }
+      .text-container h3 {
+        font-size: 1.25rem;
+      }
+      .text-container p {
+        font-size: 0.875rem;
+      }
+      .image-container {
+        max-width: 100%;
+        overflow: hidden;
+      }
+      .image-container img {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+      }
+      @media (max-width: 767px) {
+        .text-container {
+          padding: 1rem 0;
+        }
+      }
+    </style>
+
+    <section>
+      <section class="welcome-message">
+        <h1>Prix</h1>
+            <p>Voir les prix de nos offres</p>
+          </section>
+
+        <div class="pricing-tables">
+            <div class="pricing-table">
+                <h3>{{ atelier.name }}</h3>
+                <p class="price">{{ atelier.price }} DT</p>
+                <ul class="list-unstyled">
+                  <li>1 mois</li>
+                  <li>Une séance par semaine</li>
+              </ul>
+            </div>
+            </div>
+
+    </section>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+      <i class="fas fa-arrow-left"></i>
+  </a>
+  
+  
+</body>
+{% endblock content%}

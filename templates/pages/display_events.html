@@ -1,0 +1,149 @@
+<div class="event-container">
+    <div class="event-gallery">
+        {% for event in events %}
+            <div class="event-item">
+                <div class="special-event text-center">
+                    <img src="{{ event.image.url }}" alt="Event Image" class="event-image img-fluid">
+                </div>
+            </div>
+        {% empty %}
+            <p>No events available.</p>
+        {% endfor %}
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" id="prev-button" onclick="prevImage()">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="nav-button" id="next-button" onclick="nextImage()">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+</div>
+<style>
+    .event-container {
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        position: relative;
+    }
+
+
+    .event-image {
+        width: 100%;
+        height: auto;
+        max-height: 350px;
+        position: absolute;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    @media screen and (max-width: 768px) {
+        .event-image {
+            height: 120px; 
+            max-height: none; 
+        }
+    }
+    .event-image.active {
+        opacity: 1;
+    }
+
+    .event-gallery {
+        position: relative;
+        height: 350px; 
+    }
+
+    @media screen and (max-width: 768px) {
+        .event-gallery {
+            height: 120px; 
+        }
+    }
+
+    .navigation {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        z-index: 10;
+    }
+
+    .nav-button {
+        background: rgba(255, 255, 255, 0.7);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .nav-button:hover {
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .nav-button i {
+        font-size: 24px;
+        color: #333;
+    }
+
+    #prev-button {
+        margin-left: 10px;
+    }
+
+    #next-button {
+        margin-right: 10px;
+    }
+
+</style>
+<script>
+    let currentIndex = 0;
+    const images = document.querySelectorAll('.event-image');
+    let slideInterval;
+
+    function showImage(index) {
+        images.forEach((img, i) => {
+            img.classList.remove('active');
+        });
+        images[index].classList.add('active');
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+        resetTimer();
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+        resetTimer();
+    }
+
+    function startSlideshow() {
+        slideInterval = setInterval(nextImage, 5000); 
+    }
+
+    function resetTimer() {
+        clearInterval(slideInterval);
+        startSlideshow();
+    }
+
+    function init() {
+
+        images.forEach((img, i) => {
+            img.style.position = 'absolute';
+            img.style.top = '0';
+            img.style.left = '0';
+        });
+
+        showImage(currentIndex);
+        startSlideshow();
+    }
+
+    init();
+</script>

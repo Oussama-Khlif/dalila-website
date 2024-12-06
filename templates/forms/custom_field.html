@@ -1,0 +1,27 @@
+<div class="form-group">
+    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+    {{ field.errors }}
+    {% if field.field.widget.input_type == 'file' %}
+        <input type="file" id="{{ field.id_for_label }}" name="{{ field.name }}" class="form-control"/>
+    {% else %}
+        {{ field }}
+    {% endif %}
+    {% if field.help_text %}
+        <small class="form-text text-muted">{{ field.help_text }}</small>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const fileName = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
+                const label = this.previousElementSibling; 
+                if (label) {
+                    label.innerHTML = fileName; 
+                }
+            });
+        });
+    });
+</script>

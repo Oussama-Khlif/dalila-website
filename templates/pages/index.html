@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+{% include 'pages/scroll_button.html' %}
+{% include 'pages/display_events.html' %}
+
+{% for message in messages %}
+<div class="floating-message" id="floatingMessage">
+    {{ message }}
+</div>
+{% endfor %}
+
+<div>
+  <section class="welcome-message">
+      <h1>Chromarium Cultural Center</h1>
+      <p style="font-size: 20px;">كروماريوم فضاء فني ثقافي وتعليمي يسعى إلى تنمية الميول 🌺</p>
+    </section>
+
+  <section class="image-gallery" style="padding: 0px;">
+          <div class="gallery-slide">
+              <a href="#">
+                  <img src="{% static 'images/gallery_slides/1.jpg' %}" alt="Gallery Image 1">
+              </a>
+              <a href="#">
+                  <img src="{% static 'images/gallery_slides/2.jpg' %}" alt="Gallery Image 2">
+              </a>
+              <a href="#">
+                  <img src="{% static 'images/gallery_slides/3.jpg' %}" alt="Gallery Image 3">
+              </a>
+              <a href="#">
+                  <img src="{% static 'images/gallery_slides/4.jpg' %}" alt="Gallery Image 4">
+              </a>
+              <a href="#">
+                  <img src="{% static 'images/gallery_slides/5.jpg' %}" alt="Gallery Image 5">
+              </a>
+      </div>
+  </section>
+</div>
+
+<style>
+  a:hover {
+    text-decoration: none;
+}
+  .floating-message {
+      position: fixed;
+      top: 9%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: none;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+  }
+</style>
+  <style>
+    .rtl-paragraph {
+      direction: rtl !important;
+      text-align: right !important;
+      padding: 20px;
+      line-height: 1.6;
+      margin: 0 !important;
+      font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+      .rtl-paragraph {
+          font-size: 0.9rem;
+      }
+  }
+    .custom-gallery-container {
+      padding: 0px;
+      max-width: 1600px;
+      margin: 0 auto;
+      overflow: hidden;
+      position: relative;
+      background-color: #fff;
+  }
+
+  .gallery-slide {
+      display: flex;
+      transition: transform 1s ease-in-out;
+      margin: 0; 
+      padding: 0; 
+  }
+
+  .gallery-slide a {
+      display: block;
+      flex: 1 0 100%;
+      height: 350px; 
+      padding: 0; 
+  }
+
+  .gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block; 
+  }
+
+  .paper-effect {
+    background-color: #f7f7f7; 
+    border: 1px solid #e0e0e0; 
+    padding: 20px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1); 
+    border-radius: 10px; 
+    font-family: 'Georgia', serif; 
+    line-height: 1.6; 
+}
+
+.paper-effect ul {
+    list-style: none; 
+    padding-left: 0;
+}
+
+.paper-effect li {
+    margin-bottom: 10px;
+}
+
+.paper-effect p {
+    margin-bottom: 20px; 
+}
+
+.paper-effect h2 {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.circle-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00bcd4;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-family: 'Rubik', sans-serif;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  width: calc(33.33% - 20px); 
+  aspect-ratio: 1; 
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 400px) {
+  .circle {
+    width: calc(33.33% - 10px); 
+  }
+  .circle-container {
+    gap: 10px; 
+    padding: 10px;
+  }
+}
+
+.circle:hover {
+  transform: scale(1.1);
+}
+
+.circle:nth-child(odd) {
+  width: 100px;
+  height: 100px;
+}
+
+.circle:nth-child(even) {
+  width: 120px;
+  height: 120px;
+}
+
+@media (max-width: 600px) {
+  .circle-container {
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
+  }
+
+  .circle {
+      font-size: 12px;
+      padding: 15px;
+  }
+}
+  </style>
+
+    <section class="welcome-message">
+      <h1>مقدمة تعريفية💐</h1>
+    </section>
+    <div class="paper-effect">
+
+    <div class="rtl-paragraph">
+        <p>
+            كروماريوم فضاء فني ثقافي وتعليمي يسعى إلى تنمية الميول والقيم والمواهب للأطفال والشباب وتعهدها بالرعاية والتهذيب إلى جانب خلق روابط ثقافية وإجتماعية بين المبدعين في مختلف المجالات الثقافية والفنية والمجالات الأخرى، وكذلك إقامة المعارض الفنية الحية والأمسيات الفنية والثقافية والتعريف بالإنتاجات الأدبية والفكرية والفنية لللمنخرطين. وأيضا الإهتمام بالطفل من خلال دعمه وتشجيعه على الإبداع والخلق في مجالات متعددة من خلال ورشات عمل تكوينية في مجال الرسم والنحت والخط العربي، والتصوير الفوتوغرافي والموسيقى واللغات الأجنبية.
+            <br><br>
+            رؤيتنا
+            أن يكون فضاءً فنيا وثقافيا محوريا رائدا في المجال الفني والثقافي والتعليمي، يساهم في رعاية وتشجيع الفنون والثقافة.
+            <br><br>
+            رسالتنا
+            الإلتزام بتكوين الناشئة في المجال الفني والثقافي والأدبي ودعمهم وحثهم على الإستمرار في التعلّم والإستكشاف والتطوًر. مع مراعاة التقاليد الثقافية والحضارية للمجتمع.
+            <br><br>
+            أهدافنا
+            تمكين الأطفال والشباب من تنمية الأفكار والقدرات الذهنية وصقلها فنيا حسب الأدوات المتوفرة.
+            <br><br>
+            البرامج المقدمة
+            نقدم على مدار السنة حزمة من البرامج الفنية والثقافية والتعليمية، تهدف إلى تعزيز الحيوية الثقافية لدى الناشئة والتى ترتبط أساسا بالوعي الجمالي والتربية والحساسية الفنية لدى الأطفال والشباب المهتمين بمجال الفنون التشكيلية، والتصوير، والموسيقى واللغات. تساعد هذه البرامج في تطوير وصقل المواهب وتنميتها وكذلك توفير منصّات تبادل معرفي ثقافي وتجاري بين مختلف الأنماط الإبداعية من الأطفال والشباب.
+            <br><br>
+            وإننا لنسعى إلى الإسهام إيجابا في تطوير أفكار الفرد والمجتمع، ودفعها نحو الإبداع والتميّز. كما نهدف إلى دعم الأطفال والشباب من خلال توفير ممهدات النجاح وتطوير قدراتهم الفنية والثقافية والعلمية. إن العمل الفني والثقافي جهد مستمر في سبيل خدمة المجتمع وتطويره.
+            <br><br>
+            وفي مايلي مجموعة النوادي التي نقدمها على سبيل الذكر لا الحصر
+        </p>
+    </div>
+
+    <div class="circle-container">
+        <a href="{% url 'paint' %}">
+            <div class="circle">نادي الفنون التشكيلية</div>
+        </a>
+        <a href="{% url 'calligraphy' %}">
+            <div class="circle">نادي الخط العربي</div>
+        </a>
+        <a href="{% url 'photography' %}">
+            <div class="circle">نادي التصوير الفوتوغرافي</div>
+        </a>
+        <a href="{% url 'music' %}">
+            <div class="circle">نادي الموسيقى</div>
+        </a>
+        <a href="{% url 'languages' %}">
+            <div class="circle">نادي اللغات</div>
+        </a>
+        <a href="{% url 'singing_club' %}">
+            <div class="circle">نادي الغناء</div>
+        </a>
+    </div>
+
+    <div class="circle-container">
+        <a href="{% url 'pottery' %}">
+            <div class="circle">نادي الفخار</div>
+        </a>
+        <a href="{% url 'oriental_dance' %}">
+            <div class="circle">نادي الرقص الشرقي</div>
+        </a>
+        <a href="{% url 'gymnastics' %}">
+            <div class="circle">نادي الجمباز</div>
+        </a>
+        <a href="{% url 'crafting' %}">
+            <div class="circle">نادي الأشغال اليدوية</div>
+        </a>
+        <a href="{% url 'robotics' %}">
+            <div class="circle">نادي الروبوتيك</div>
+        </a>
+        <a href="{% url 'mental_calculation' %}">
+            <div class="circle">نادي الحساب الذهني</div>
+        </a>
+    </div>
+</section>
+</div>
+
+<div class="container" style="margin-top:20px; padding:20px;">
+  <div class="row">
+    <div class="col-md-4 col-12 mb-3" >
+      <img src="{% static 'images/stream.jpg' %}" alt="البث المباشر" class="img-fluid rounded">
+    </div>
+    <div class="col-md-8 col-12">
+      <div class="text-center mb-3">
+        <i class="fab fa-youtube fa-2x" style="color: #FF0000;"></i>
+      </div>
+      <h2 style="color: #FF0000;">انضموا إلينا في البث المباشر على يوتيوب</h2>
+      <p>
+        لا تفوتوا الأنشطة القادمة التي سنبثها مباشرة، حيث سنتناول مجموعة متنوعة من الفعاليات الثقافية والفنية. بالإضافة إلى ذلك، سيتم بث القرآن الكريم في الأوقات الفارغة. هذه فرصة رائعة للمشاركة والتفاعل. اضغطوا على الرابط أدناه لمزيد من التفاصيل.
+      </p>
+      <a href="{% url 'live_stream' %}" class="btn btn-danger">
+        مشاهدة
+      </a>        
+    </div>
+  </div>
+</div>
+
+<section class="todays-video">
+  <section class="welcome-message">
+      <h1>Vidéo d'aujourd'hui</h1>
+  </section>
+
+  <div class="media-container">
+      {% if latest_video %}
+          <p style="font-size: 18px;">{{ latest_video.title }}</p>
+          <video id="todayVideo" controls muted>
+              <source src="{{ latest_video.video_file.url }}" type="video/mp4">
+              Votre navigateur ne prend pas en charge la balise vidéo.
+          </video>
+      {% else %}
+          <p>Aucune vidéo téléchargée pour l'instant</p>
+      {% endif %}
+  </div>
+</section>
+
+{% if user.is_superuser %}
+<a href="{% url 'upload_video' %}" class="btn btn-success">Modifier le vidéo</a><br><br>
+<a href="{% url 'update_event' %}" class="btn btn-success">Modifier la bannière</a>
+{% endif %}
+
+<section class="welcome-message">
+  <h1>Les Ateliers</h1>
+  <p class="lead">استكشفوا ورشاتنا الإبداعية والتعليمية: الرسم، الموسيقى، الخط، الحساب الذهني، الروبوتيك، المسرح، واللغات.</p>
+</section>
+
+  <div class="row">
+
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'paint' %}">
+          <img src="{% static 'images/paint.jpg' %}" class="card-img-top" alt="Atelier de Peinture">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Peinture</h3>
+          <p class="card-text flex-grow-1">Libérez votre créativité avec la peinture</p>
+          <a href="{% url 'paint' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'music' %}">
+          <img src="{% static 'images/music.jpg' %}" class="card-img-top" alt="Atelier de Musique">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Musique</h3>
+          <p class="card-text flex-grow-1">Libérez votre talent musical avec nos ateliers</p>
+          <a href="{% url 'music' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'robotics' %}">
+          <img src="{% static 'images/robotics.jpg' %}" class="card-img-top" alt="Atelier de Robotique">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Robotique</h3>
+          <p class="card-text flex-grow-1">Explorez l'innovation technologique de robotique</p>
+          <a href="{% url 'robotics' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'mental_calculation' %}">
+          <img src="{% static 'images/Calcul_mental.png' %}" class="card-img-top" alt="Atelier de Calcul Mental">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Calcul Mental</h3>
+          <p class="card-text flex-grow-1">Développez vos compétences mentales avec nos ateliers de calcul</p>
+          <a href="{% url 'mental_calculation' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'calligraphy' %}">
+          <img src="{% static 'images/caligraphy.jpg' %}" class="card-img-top" alt="Atelier de Calligraphie">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Calligraphie</h3>
+          <p class="card-text flex-grow-1">Perfectionnez votre art de l’écriture avec nos ateliers de calligraphie</p>
+          <a href="{% url 'calligraphy' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-6 col-lg-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <a href="{% url 'theater' %}">
+          <img src="{% static 'images/theater.jpg' %}" class="card-img-top" alt="Atelier de Théâtre">
+        </a>
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title">Théâtre</h3>
+          <p class="card-text flex-grow-1">Exprimez votre passion sur scène avec nos ateliers de théâtre.</p>
+          <a href="{% url 'theater' %}" class="btn btn-secondary mt-auto align-self-center">Plus</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="{% static 'images/artgallery.jpg' %}" alt="Art Gallery" class="img-fluid rounded">        
+      </div>
+      <div class="col-md-6">
+          <h2 class="display-4">Découvrez notre Marketplace des Tableaux</h2>
+          <p class="lead">Explorez notre collection exclusive de peintures. Visitez notre marketplace pour découvrir des œuvres uniques qui pourraient parfaitement s'adapter à votre espace.</p>
+          <a href="{% url 'art_gallery' %}" class="btn btn-secondary">Voir la Galerie</a>
+      </div>
+  </div>
+
+<section>
+  <div class="welcome-message">
+    <div class="col-12">
+      <h1>Les Avis</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <img src="{% static 'images/zohra bdey essoussi.jpg' %}" alt="Sarah Lee" class="card-img-top rounded-circle mx-auto mt-3" style="width: 120px; height: 120px; object-fit: cover;" 
+                srcset="{% static 'images/zohra bdey essoussi.jpg' %} 1x, {% static 'images/zohra bdey essoussi.jpg' %} 2x">
+            <div class="card-body text-center">
+                <h5 class="card-title">Zohra Bdey Essoussi</h5>
+                <p class="card-text">انشاء الله بتوفيق يا دودة تستحق كل خير</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <img src="{% static 'images/farah farah jebali.jpg' %}" alt="John Doe" class="card-img-top rounded-circle mx-auto mt-3" style="width: 120px; height: 120px; object-fit: cover;" 
+                srcset="{% static 'images/farah farah jebali.jpg' %} 1x, {% static 'images/farah farah jebali.jpg' %} 2x">
+            <div class="card-body text-center">
+                <h5 class="card-title">Farah Farah Jebali</h5>
+                <p class="card-text">بالتوفيق عزيزتي دلولات 💖 و شكرا على هذا الامتنان 🥰♥️ ادام الله صداقتنا</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <img src="{% static 'images/Nassima Galai.jpg' %}" alt="Emily Johnson" class="card-img-top rounded-circle mx-auto mt-3" style="width: 120px; height: 120px; object-fit: cover;" 
+                srcset="{% static 'images/Nassima Galai.jpg' %} 1x, {% static 'images/Nassima Galai.jpg' %} 2x">
+            <div class="card-body text-center">
+                <h5 class="card-title">Nassima Galai</h5>
+                <p class="card-text">ألف شكر سيدتى على التكريم و على الامسية التحفونة من نجاح الى نجاح</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <img src="{% static 'images/amelbalti.jpg' %}" alt="Emily Johnson" class="card-img-top rounded-circle mx-auto mt-3" style="width: 120px; height: 120px; object-fit: cover;" 
+                srcset="{% static 'images/amelbalti.jpg' %} 1x, {% static 'images/amelbalti.jpg' %} 2x">
+            <div class="card-body text-center">
+                <h5 class="card-title">Amel Balti</h5>
+                <p class="card-text">الله وحد و ما شاء الله على المجموعة...والله وحدعلى دليلة ما كيفها حد في الخدمة و الاخلاق...بالتوفيق انشالله</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const video = document.getElementById('todayVideo');
+
+      function isInViewport(element) {
+          const rect = element.getBoundingClientRect();
+          return (
+              rect.top >= 0 &&
+              rect.left >= 0 &&
+              rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+              rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+          );
+      }
+
+      function checkVideo() {
+          if (isInViewport(video) && !video.playing) {
+              video.play();
+          } else if (!isInViewport(video) && video.playing) {
+              video.pause();
+          }
+      }
+
+      window.addEventListener('scroll', checkVideo);
+      window.addEventListener('resize', checkVideo); 
+      checkVideo(); 
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const slideContainer = document.querySelector('.gallery-slide');
+      const slides = document.querySelectorAll('.gallery-slide a');
+      const slideWidth = slides[0].offsetWidth;
+      let currentIndex = 0;
+      const firstSlideClone = slides[0].cloneNode(true);
+      slideContainer.appendChild(firstSlideClone);
+
+      function startSlideShow() {
+          setInterval(() => {
+              currentIndex++;
+              slideContainer.style.transition = 'transform 1s ease-in-out';
+              slideContainer.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+              if (currentIndex === slides.length) {
+                  setTimeout(() => {
+                      slideContainer.style.transition = 'none';
+                      slideContainer.style.transform = `translateX(0)`;
+                      currentIndex = 0;
+                  }, 1000);
+              }
+          }, 3000);
+      }
+
+      startSlideShow();
+  });
+</script>
+
+<script>
+  const message = document.getElementById('floatingMessage');
+  if (message) {
+      message.style.display = 'block';
+      setTimeout(() => {
+          message.style.opacity = '0';
+          setTimeout(() => {
+              message.style.display = 'none';
+          }, 500);
+      }, 5000);
+  }
+  </script>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const cookieConsent = document.getElementById('cookie-consent');
+          const acceptCookiesButton = document.getElementById('accept-cookies');
+
+          if (!getCookie('cookies_accepted')) {
+              cookieConsent.style.display = 'block';
+          }
+
+          acceptCookiesButton.addEventListener('click', function() {
+              setCookie('cookies_accepted', 'true', 365);
+              cookieConsent.style.display = 'none';
+          });
+
+          function getCookie(name) {
+              const value = `; ${document.cookie}`;
+              const parts = value.split(`; ${name}=`);
+              if (parts.length === 2) return parts.pop().split(';').shift();
+          }
+
+          function setCookie(name, value, days) {
+              let expires = '';
+              if (days) {
+                  const date = new Date();
+                  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                  expires = `; expires=${date.toUTCString()}`;
+              }
+              document.cookie = `${name}=${value || ''}${expires}; path=/`;
+          }
+      });
+  </script>
+{% endblock %}

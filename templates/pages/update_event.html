@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/display_events.html' %}
+
+    <section class="welcome-message">
+        <h1>Gestion des Bannières Publicitaires</h1>
+        <p>Ajoutez ou supprimez des bannières publicitaires</p>
+    </section>
+
+<form method="post" enctype="multipart/form-data" style="text-align: center;">
+    {% csrf_token %}
+    {{ event_form.as_p }}
+    <button type="submit" class="btn btn-secondary">Enregistrer</button>
+</form>
+
+<div class="events-list mt-4">
+    <h3>Bannières existantes</h3>
+
+    <form method="post" id="deleteForm">
+        {% csrf_token %}
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" id="selectAll" class="form-check-input">
+                <br>
+                <label class="form-check-label" for="selectAll">Sélectionner tout</label>
+            </div>
+        </div>
+
+        <div class="list-group">
+            {% for event in events %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <label class="form-check-label" style="flex: 1;">
+                        {% if event.image %}
+                            <img src="{{ event.image.url }}" alt="Event image" style="height: 50px; width: auto; margin-right: 10px;">
+                        {% endif %}
+                        Bannière #{{ event.id }}
+                    </label>
+                    <div class="form-check" style="flex-shrink: 0;">
+                        <input type="checkbox" name="event_ids" value="{{ event.id }}" 
+                            class="form-check-input event-checkbox">
+                    </div>
+                </div>
+            {% empty %}
+                <p>Aucune bannière disponible.</p>
+            {% endfor %}
+        </div>
+
+        {% if events %}
+            <button type="submit" name="delete_multiple" class="btn btn-danger mt-3" 
+                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer les bannières sélectionnées ?')">
+                Supprimer les éléments sélectionnés
+            </button>
+        {% endif %}
+    </form>
+</div>
+
+<br>
+<a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+
+<script>
+document.getElementById('selectAll').addEventListener('change', function() {
+    var checkboxes = document.getElementsByClassName('event-checkbox');
+    for (var checkbox of checkboxes) {
+        checkbox.checked = this.checked;
+    }
+});
+</script>
+{% endblock %}

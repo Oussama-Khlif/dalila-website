@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/display_events.html' %}
+
+<section class="welcome-message">
+    <h1>Ajouter des photos</h1>
+    <p>Ajoutez des photos à votre galerie</p>
+</section>
+
+{% if messages %}
+    <div class="alert" role="alert">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group" style="text-align: center;">
+            <img src="{% static 'images/camera.png' %}" 
+                alt="Alert Image" 
+                style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+                <h2>Ajouter des photos</h2>
+                </div>
+        {{ form.as_p }}
+        <button type="submit">Télécharger</button>
+    </form>
+    <br>
+    <a class="btn btn-secondary" href="{% url 'list_media' %}" style="display: inline-block; color: white;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+{% endblock content %}

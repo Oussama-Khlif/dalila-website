@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/display_events.html' %}
+
+<style>
+    .profile-image-container {
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #ededed;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<section class="welcome-message">
+    <h1>Gestion des utilisateurs</h1>
+</section>
+
+<h2 class="border-bottom pb-2 mb-4">UTILISATEURS ACTIFS</h2>
+
+<div class="row">
+    {% for user in users %}
+        {% if not user.is_banned %}
+        <div class="col-4 col-md-2 mb-4">
+            <div class="card shadow-sm h-100" style="padding:10px;">
+                <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/user.png' %}{% endif %}"
+                    class="rounded-circle mb-3 profile-image-container" width="100" height="100" alt="{{ user.username }}" style="margin:0 auto;">
+                <h5 class="card-title mb-0">
+                    {{ user.username }} 
+                    {% if user.is_superuser %}
+                        <span class="badge bg-warning text-dark">Admin</span>
+                    {% endif %}
+                </h5>
+                <div class="d-flex justify-content-center gap-2">
+                    {% if not user.is_superuser %}
+                        <div style="margin: 10px;">
+                            <button class="btn btn-sm {% if user.is_banned %}btn-success{% else %}btn-danger{% endif %}" 
+                                    onclick="handleAction({{ user.id }}, '{% if user.is_banned %}unban{% else %}ban{% endif %}')">
+                                {% if user.is_banned %}Unban{% else %}Ban{% endif %}
+                            </button>
+                        </div>
+                    {% else %}
+                        <!-- Button for superuser: greyed out and unclickable -->
+                        <div style="margin: 10px;">
+                            <button class="btn btn-sm btn-danger" disabled>
+                                {% if user.is_banned %}Unban{% else %}Ban{% endif %}
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+                
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div class="align-items-center" style="margin:15px;">
+    <a href="{% url 'myaccount' %}" class="btn btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+<br>
+<h2 class="border-bottom pb-2 mb-4 text-danger">UTILISATEURS BANNIS</h2>
+<div class="row">
+    {% for user in users %}
+        {% if user.is_banned %}
+        <div class="col-4 col-md-2 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100" style="padding:10px;">
+                    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/user.png' %}{% endif %}" 
+                        class="rounded-circle mb-3 profile-image-container" width="100" height="100" alt="{{ user.username }}" style="margin:0 auto;">
+                    <h5 class="card-title mb-0">
+                        {{ user.username }}
+                        {% if user.is_superuser %}
+                            <span class="badge bg-warning text-dark">Admin</span>
+                        {% endif %}
+                    </h5>
+                    <div class="d-flex justify-content-center gap-2">
+                        {% if not user.is_superuser %}
+                        <div style="margin: 10px;">
+                            <button class="btn btn-sm {% if user.is_banned %}btn-success{% else %}btn-danger{% endif %}" 
+                                    onclick="handleAction({{ user.id }}, '{% if user.is_banned %}unban{% else %}ban{% endif %}')">
+                            {% if user.is_banned %}Unban{% else %}Ban{% endif %}
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+{% if not has_banned_users %}
+    <div class="alert alert-warning mt-4" role="alert">
+        Aucun utilisateur n'est actuellement banni.
+    </div>
+{% endif %}
+
+<div class="align-items-center" style="margin:15px;">
+    <a href="{% url 'myaccount' %}" class="btn btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+<script>
+    function handleAction(userId, action) {
+        const message = action === 'ban' 
+            ? "Êtes-vous sûr de vouloir interdire cet utilisateur ?" 
+            : "Êtes-vous sûr de vouloir lever l'interdiction de cet utilisateur ?";
+        
+        if (!confirm(message)) {
+            return;
+        }
+
+        const csrfToken = "{{ csrf_token }}";
+
+        fetch('', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ user_id: userId, action: action })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur:", error);
+            alert("Une erreur s'est produite. Veuillez réessayer.");
+        });
+    }
+</script>
+
+{% endblock content %}

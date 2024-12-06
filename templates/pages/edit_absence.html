@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div>
+    <section class="welcome-message">
+        <h1>Modifier présence de {{ absence.profile.name }}</h1>
+    </section>
+
+    {% if messages %}
+{% for message in messages %}
+    <div class="alert 
+                {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" 
+        role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% endif %}
+        <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="date_from">Date de début</label>
+                <input type="datetime-local" name="date_from" id="date_from" class="form-control" value="{{ absence.date_from|date:'Y-m-d H:i' }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="date_to">Date de fin</label>
+                <input type="datetime-local" name="date_to" id="date_to" class="form-control" value="{{ absence.date_to|date:'Y-m-d H:i' }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="is_present">Présent</label>
+                <input type="checkbox" name="is_present" id="is_present" {% if absence.is_present %}checked{% endif %}>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="is_absent">Absent</label>
+                <input type="checkbox" name="is_absent" id="is_absent" {% if absence.is_absent %}checked{% endif %}>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-secondary">Mettre à jour</button>
+    </form>
+    <br>
+    <a href="{% url 'absences_details' absence.profile.matricule %}" class="btn btn-secondary">Annuler</a>
+</div>
+
+{% endblock content %}

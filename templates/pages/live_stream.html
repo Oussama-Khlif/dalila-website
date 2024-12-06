@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/display_events.html' %}
+<body>
+    <section class="welcome-message">
+        <h1>Diffusion EN DIRECT</h1>
+        <p style="text-align: center; font-size: 15px; margin-bottom: 20px;">
+            مرحباً بكم في صفحة البث المباشر الخاصة بنا، حيث يمكنكم متابعة أحدث الفعاليات والأنشطة التي ننظمها في المركز الثقافي
+            تابعوا البث المباشر واستمتعوا بتنوع المحتويات، ولا تنسوا التفاعل معنا ومشاركة آرائكم
+        </p>
+    </section>
+
+    <div class="video-container" style="text-align: center;">
+        <div class="video-wrapper" style="max-width: 1280px; margin: auto; border: 2px solid #ddd; border-radius: 8px; overflow: hidden;">
+            <div style="position: relative; padding-bottom: 56.25%; /* 16:9 Aspect Ratio */"> 
+            <iframe 
+                src="{{ video_url }}?autoplay=1" 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+                allow="fullscreen; picture-in-picture; autoplay" 
+                allowfullscreen>
+            </iframe>
+            </div>
+        </div>
+    </div>
+    
+    
+    <br>
+    
+    {% if user.is_superuser %}
+    <div>
+        <p style="text-align: center; font-size: 16px; margin-bottom: 20px;">
+            Pour mettre à jour le lien du flux en direct, veuillez copier et coller le lien vidéo YouTube ici.
+        </p>
+    
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group" style="text-align: center;">
+                <img src="{% static 'images/live.png' %}" 
+                    alt="Alert Image" 
+                    style="width: 100px; height: 80px; object-fit: cover; margin: 0 auto;" />
+            </div>
+            <div class="form-group">
+                {{ form.video_url.label_tag|default:"Mettre à jour l'URL du flux vidéo" }}
+                {{ form.video_url }}
+            </div>
+            <button type="submit" class="btn btn-secondary">Mettre à jour l'URL</button>
+        </form>
+    </div>
+    {% endif %}
+    
+
+    <br>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</body>
+{% endblock content %}

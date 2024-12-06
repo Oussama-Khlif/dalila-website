@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load custom_filters %}
+{% include 'pages/display_events.html' %}
+{% include 'pages/notes.html' %}
+
+<style>
+.profile-details-page {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.action-buttons .btn-group a {
+    margin-right: 10px;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+.card {
+    border: none;
+}
+
+.alert-section .alert {
+    margin-bottom: 20px;
+}
+
+.profile-img {
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #ededed;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        margin: 0;
+    }
+}
+
+.profile-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.welcome-message{
+	padding-bottom:0;
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <section class="welcome-message">
+        <h1 class="display-5">Détails Profil</h1>
+    </section>
+
+        {% if profile.absence_alert or extra_time or facture_message or rattrappage_message %}
+        <div class="alert-section mt-4">
+                {% if profile.absence_alert %}
+                    <div class="alert alert-danger">
+                        <strong>⚠️ {{ profile.name }} a annoncé son absence le {{ profile.absence_alert|date:"d-m-Y" }}</strong>
+                        <p></p>
+                        <p>Date d'absence: {{ profile.upcoming_absence_date|date:"d-m-Y" }} ({{ profile.atelier_absent }})</p>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeletion()" title="Supprimer l'alerte d'absence">ignorer</button>
+
+                    <form id="deleteAbsenceForm" method="post" style="display: none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_absence" value="1">
+                    </form>
+
+                    <script>
+                        function confirmDeletion() {
+                            const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette alerte d'absence ?");
+                            if (confirmation) {
+                                document.getElementById('deleteAbsenceForm').submit();
+                            }
+                        }
+                    </script>
+                    </div>
+                {% endif %}
+                {% if extra_time %}
+                    <div class="alert alert-info">{{ extra_time }}</div>
+                {% endif %}
+
+                {% if facture_message %}
+                    <div class="alert alert-success">{{ facture_message }}</div>
+                {% endif %}
+                {% if rattrappage_message %}
+                    <div class="alert alert-primary">{{ rattrappage_message }}</div>
+                {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="row">
+
+<div class="col-lg-4 text-center mb-4 profile-image-container">
+  {% if profile.profile_picture %}
+      <img class="img-fluid rounded-circle profile-img" 
+          src="{{ profile.profile_picture.url }}" 
+          alt="Photo de profil de {{ profile.name }}">
+  {% else %}
+      <img class="img-fluid rounded-circle profile-img" 
+          src="{% static 'images/user.png' %}" 
+          alt="Photo de profil de client">
+  {% endif %}
+</div>
+
+<div class="col-lg-8">
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-3">{{ profile.name }} {{ profile.last_name }}</h2>
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Matricule:</strong> {{ profile.matricule }}</li>
+            <li class="list-group-item"><strong>Rôle:</strong> {{ profile.get_role_display }}</li>
+
+            {% if profile.role == 'student' or profile.role == 'none' %}
+            <li class="list-group-item"><strong>Groupes:</strong>
+                {% if profile.groups.all %}
+                    <ul class="list-unstyled mt-2">
+                    {% for group in profile.groups.all %}
+                        <li><i class="fas fa-users"></i> {{ group }}</li>  
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    Aucun groupe
+                {% endif %}
+            </li>
+            <li class="list-group-item"><strong>Type d'inscription:</strong> {{ profile.get_registration_type_display }}</li>
+            <li class="list-group-item"><strong>Numéro de Parent:</strong> {{ profile.parent_number }}</li>
+            {% elif profile.role == 'teacher' %}
+            <li class="list-group-item"><strong>Groupes:</strong>
+                {% if profile.groups.all %}
+                    <ul class="list-unstyled mt-2">
+                    {% for group in profile.groups.all %}
+                        <li><i class="fas fa-users"></i> {{ group }}</li>  
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    Aucun groupe
+                {% endif %}
+            </li>
+            <li class="list-group-item"><strong>Numéro:</strong> {{ profile.parent_number }}</li>
+            {% endif %}
+
+            <li class="list-group-item"><strong>Email:</strong> 
+                {% if profile.email %}
+                    {{ profile.email }}
+                {% else %}
+                    <span class="text-muted">Pas d'email disponible</span>
+                {% endif %}
+            </li>
+            <li class="list-group-item"><strong>Date de Naissance:</strong> 
+                {{ profile.date_of_birth }} ({{ profile.date_of_birth|calculate_age }} ans)
+            </li>
+
+            <li class="list-group-item">
+                <strong>Ateliers Inscrits:</strong>
+                <ul class="list-unstyled mt-2">
+                    {% for atelier in profile.ateliers.all %}
+                        <li><i class="fas fa-chalkboard-teacher"></i> {{ atelier.name }}</li>
+                    {% empty %}
+                        <li>Aucun atelier inscrit</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <p style="color: red; margin-top:20px;">Date d'Inscription:
+        {{ profile.date_registered|date:"d-m-Y H:i" }}
+    </p>
+</div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        {% if profile.role == 'student' or profile.role == 'none' %}
+            <div class="col-lg-3 col-md-6 mb-3">
+                <a href="{% url 'fee_details' matricule=profile.matricule %}" class="btn btn-success w-100">
+                    <i class="fas fa-file-invoice"></i> Facture
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <a href="{% url 'rattrappage' matricule=profile.matricule %}" class="btn btn-info w-100" style="background-color: #0384fc; color: white;">
+                    <i class="fas fa-chalkboard"></i> Rattrappage
+                </a>
+            </div>
+            
+        {% elif profile.role == 'teacher' %}
+            <div class="col-lg-3 col-md-6 mb-3">
+                <a href="{% url 'teacher_fee' profile.matricule %}" class="btn btn-success w-100">
+                    <i class="fas fa-file-invoice"></i> Facture
+                </a>
+            </div>
+        {% endif %}
+    
+        <div class="col-lg-3 col-md-6 mb-3">
+            <a onclick="openModal()" class="btn btn-warning w-100 position-relative">
+                <i class="fa-solid fa-note-sticky"></i> Notes
+                {% if profile.notes %}
+                    <span class="badge position-absolute top-0 start-100 translate-middle p-2 bg-danger rounded-circle">!</span>
+                {% endif %}
+            </a>
+        </div>
+    
+        <div class="col-lg-3 col-md-6 mb-3">
+            <a class="btn btn-secondary w-100 d-flex align-items-center justify-content-center" style="height:38px;" href="{% url 'absences_details' matricule=profile.matricule %}">
+                <i class="fas fa-history me-2"></i> Historique de présences
+            </a>
+        </div>
+        
+    </div>
+    
+
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        <a href="{% url 'edit_profile' matricule=profile.matricule %}" class="btn btn-secondary mx-2">
+            <i class="fas fa-edit"></i> Modifier
+        </a>
+        <button class="btn btn-secondary" type="button" onclick="confirmAndSubmitDelete('{{ profile.matricule }}')" style="background-color:red; border: none;">
+            <i class="fas fa-trash-alt"></i> Supprimer
+        </button>
+        <form id="delete-profile-form" method="post" style="display:none;">
+            {% csrf_token %}
+            <input type="hidden" name="profile_matricule" value="{{ profile.matricule }}">
+        </form>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'myclients' %}" class="btn btn-outline-dark">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+
+    <script>
+      function confirmAndSubmitDelete(matricule) {
+          if (confirm('Êtes-vous sûr de vouloir supprimer ce profil ?')) {
+              var form = document.getElementById('delete-profile-form');
+              form.action = "{% url 'delete_profile' matricule='__MATRICULE__' %}".replace('__MATRICULE__', matricule);
+              form.submit();
+          }
+      }
+  </script>
+
+  <style>
+    .btn .badge {
+        font-size: 0.75rem;
+        width: 1rem;
+        height: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+{% endblock content %}

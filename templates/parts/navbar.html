@@ -1,0 +1,413 @@
+{% load static %}
+{% load navbar_notifications %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        .navbar {
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; 
+            background-color: #fff; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: bold;
+            font-size: 1.1em; 
+        }
+
+        .navbar-brand img {
+            max-width: 130px; 
+        }
+
+        .text-truncate {
+            display: flex;
+            align-items: center;
+            max-width: 150px; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 12px; 
+            margin-right: 4px;
+        }
+
+        .painting-name {
+            margin-left: 10px; 
+        }
+
+        .dropdown-menu {
+            display: block;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s, height 0.3s ease;
+            position: absolute;
+            width: 100%; 
+            left: 0;
+            height: 0; 
+            overflow: hidden;
+            font-size: 0.9rem; 
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            height: auto; 
+        }
+
+        @media (max-width: 768px) {
+            .dropdown-menu {
+                position: static; 
+                width: 100%; 
+                padding: 0;
+                margin-top: 5px; 
+                box-sizing: border-box;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .dropdown-menu {
+                width: auto; 
+                right: 0; 
+                left: auto; 
+            }
+        }
+
+        @media (max-width: 768px) { 
+            .dropdown-menu {
+                text-align: center; 
+            }
+
+            .dropdown-item {
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+            }
+
+            .dropdown-item i {
+                margin-right: 8px; 
+            }
+            
+        }
+
+            @media (max-width: 1600px) {
+                .responsive-navbar {
+                    font-size: 0.9rem; 
+                }
+            }
+
+            @media (max-height: 900px) {
+                .responsive-navbar {
+                    font-size: 0.9rem; 
+                }
+            }
+
+            @media (max-width: 1600px) and (max-height: 900px) {
+                .responsive-navbar {
+                    font-size: 0.85rem; 
+                }
+        }
+        .position-relative {
+            display: inline-block;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            padding: 3px 6px;
+            border-radius: 50%;
+            font-size: 10px;
+            line-height: 1;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #notificationDropdown .position-relative {
+            font-size: 20px;
+        }
+
+        #notificationDropdown .ms-1 {
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-menu.dropdown-menu-lg {
+                width: 100% !important;
+        }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdownToggle = document.getElementById('workshopsDropdown');
+            var dropdownMenu = dropdownToggle.nextElementSibling;
+
+            dropdownToggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (dropdownMenu.classList.contains('show')) {
+                    dropdownMenu.classList.remove('show');
+                } else {
+                    document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                        menu.classList.remove('show');
+                    });
+
+                    dropdownMenu.classList.add('show');
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Logo de votre marque" class="img-fluid mb-2" style="max-width: 280px;">
+        </a>        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse responsive-navbar" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}"><i class="bi bi-house"></i> ACCUEIL</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="workshopsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-tools"></i> ATELIERS
+                    </a>                    
+                    <div class="dropdown-menu" aria-labelledby="workshopsDropdown">
+                        <a class="dropdown-item" href="{% url 'fimo_clay' %}"><i class="fa-solid fa-smog"></i> ARGILE POLYMÈRE</a>
+                        <a class="dropdown-item" href="{% url 'crafting' %}"><i class="fas fa-tools"></i> BRICOLAGE</a>
+                        <a class="dropdown-item" href="{% url 'mental_calculation' %}"><i class="fas fa-calculator"></i> CALCUL MENTAL</a>
+                        <a class="dropdown-item" href="{% url 'calligraphy' %}"><i class="fas fa-pencil-alt"></i> CALLIGRAPHIE</a>
+                        <a class="dropdown-item" href="{% url 'singing_club' %}"><i class="fas fa-microphone"></i> CLUB DE CHANT</a>
+                        <a class="dropdown-item" href="{% url 'oriental_dance' %}"><i class="fa-solid fa-child"></i> DANSE ORIENTALE</a>
+                        <a class="dropdown-item" href="{% url 'gymnastics' %}"><i class="fas fa-dumbbell"></i> GYMNASTIQUE</a>
+                        <a class="dropdown-item" href="{% url 'languages' %}"><i class="fas fa-language"></i> LANGUES</a>
+                        <a class="dropdown-item" href="{% url 'music' %}"><i class="fas fa-music"></i> MUSIQUE</a>
+                        <a class="dropdown-item" href="{% url 'paint' %}"><i class="fas fa-paint-brush"></i> PEINTURE</a>
+                        <a class="dropdown-item" href="{% url 'photography' %}"><i class="fas fa-camera"></i> PHOTOGRAPHIE</a>
+                        <a class="dropdown-item" href="{% url 'pottery' %}"><i class="fa-solid fa-whiskey-glass"></i> POTERIE</a>
+                        <a class="dropdown-item" href="{% url 'robotics' %}"><i class="fas fa-robot"></i> ROBOTIQUE</a>
+                        <a class="dropdown-item" href="{% url 'theater' %}"><i class="fas fa-theater-masks"></i> THÉÂTRE</a>
+                    </div>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'list_media' %}"><i class="bi bi-images"></i> GALLERIE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'art_gallery' %}"><i class="fa-solid fa-cart-shopping"></i> MARKETPLACE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'live_stream' %}"><i class="bi bi-broadcast"></i> DIFFUSION EN DIRECT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}"><i class="bi bi-info-circle"></i> À PROPOS</a>
+                </li>
+
+            </ul>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" style="margin-top:28px;" href="#" id="wishlistDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ❤️ Liste des Souhaits
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="wishlistDropdown">
+                            {% if user.wishlist.exists %}
+                                <ul class="list-group">
+                                    {% for painting in user.wishlist.all %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <a href="{% url 'painting_details' painting.id %}" class="d-flex align-items-center text-truncate">
+                                                <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" class="img-fluid" style="width: 50px; height: auto; margin-left: 10px;">
+                                                <span class="painting-name">{{ painting.name }}</span>
+                                            </a>                                            
+                                            <div class="d-flex align-items-center ml-auto">
+                                                <div class="d-flex align-items-center ml-auto">
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWishlist({{ painting.id }})">Retirer</button>
+                                                    <form id="remove-form-{{ painting.id }}" action="{% url 'remove_from_wishlist' painting.id %}" method="post" style="display: none;">
+                                                        {% csrf_token %}
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-center" href="{% url 'wishlist' %}">Voir la liste des souhaits</a>
+                            {% else %}
+                                <p class="dropdown-item">La liste est vide</p>
+                            {% endif %}
+                        </div>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle position-relative" style="margin-top:28px;" href="#" id="notificationDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="position-relative">
+                                    🔔
+                                    {% notifications as alerts %}
+                                    {% if alerts.count > 0 %}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; transform: translate(-50%, -50%);">
+                                            {{ alerts.count }}
+                                        </span>
+                                    {% endif %}
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-lg" aria-labelledby="notificationDropdown" style="width: 400px; max-height: 500px; overflow-y: auto;">
+                                {% if alerts %}
+                                    <h6 class="dropdown-header border-bottom py-2 bg-light fw-bold">Notifications</h6>
+                                    <ul class="list-group list-group-flush">
+                                        {% for alert in alerts %}
+                                            <li class="list-group-item py-3">
+                                                <div class="d-flex">
+                                                    <div class="ms-2">{{ alert.message }}</div>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="p-2 text-center">
+                                        <button class="btn btn-danger w-75" id="clearNotificationsBtn">Effacer Tout</button>
+                                    </div>
+                                {% else %}
+                                    <div class="dropdown-item text-center py-3">
+                                        <p class="text-muted mb-0">Aucune notification</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </li>
+                    <li class="nav-item dropdown text-center">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Icône Utilisateur" style="
+                            display: block;
+                            margin: 0 auto;
+                            width: 60px; 
+                            height: 60px; 
+                            border-radius: 50%; 
+                            object-fit: cover; 
+                        ">
+
+                            {% else %}
+                                <img src="{% static 'images/user_client.png' %}" alt="Icône Utilisateur" style="
+                                display: block;
+                                margin: 0 auto;
+                                width: 60px; 
+                                height: 60px; 
+                                border-radius: 50%; 
+                                object-fit: cover; 
+                            ">
+                            {% endif %}
+                            <span>{{ user.username }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            {% if user.is_superuser %}
+                            <a class="dropdown-item" href="{% url 'myaccount' %}">
+                                <i class="bi bi-house"></i> Mon Compte
+                            </a>
+                            <a class="dropdown-item" href="{% url 'myclients' %}">
+                                <i class="bi bi-person"></i> Mes Etudinats
+                            </a>
+                            <a class="dropdown-item" href="{% url 'my_ateliers' %}">
+                                <i class="bi bi-tools"></i> Mes Ateliers
+                            </a>
+                            <a class="dropdown-item" href="{% url 'mypaintings' %}">
+                                <i class="bi bi-paint-bucket"></i> Mes Tableaux
+                            </a>
+                            <a class="dropdown-item" href="{% url 'absences' %}">
+                                <i class="bi bi-check-square"></i> Marquer Présences
+                            </a>
+                            <a class="dropdown-item" href="{% url 'statistics' %}">
+                                <i class="bi bi-bar-chart-line"></i> Mes Statistiques
+                            </a>
+                        {% endif %}
+                        {% if not user.is_superuser %}
+                            <a class="dropdown-item" href="{% url 'myaccount' %}">
+                                <i class="bi bi-house"></i> Mon Compte
+                            </a>
+                            <a class="dropdown-item" href="{% url 'mypaintings' %}">
+                                <i class="bi bi-paint-bucket"></i> Mes Tableaux
+                            </a>
+                            <a class="dropdown-item" href="{% url 'view_absences' %}">
+                                <i class="bi bi-check-square"></i> Mes Présences
+                            </a>
+                            <a class="dropdown-item" href="{% url 'absence_alert' %}">
+                                <i class="bi bi-bell"></i> Annoncer Absence
+                            </a>
+                        {% endif %}
+                            <div>
+                                <form method="post" action="{% url 'logout' %}" class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown"></div>
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-lock"></i> Déconnexion
+                                    </button>
+                            </form>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Se Connecter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Créer un compte</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <script>
+        function removeFromWishlist(paintingId) {
+            var form = document.getElementById('remove-form-' + paintingId);
+
+            if (form) {
+                form.submit();
+            } else {
+                console.error('Form not found for painting ID:', paintingId);
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const clearNotificationsBtn = document.getElementById('clearNotificationsBtn');
+            if (clearNotificationsBtn) {
+                clearNotificationsBtn.addEventListener('click', function() {
+                    fetch("{% url 'clear_notifications' %}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}",
+                            "Content-Type": "application/json",
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();  
+                        } else {
+                            alert(data.message);  
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+    
+</body>
+</html>

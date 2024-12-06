@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'pages/messenger_bubble.html' %}
+{% include 'pages/display_events.html' %}
+
+<div>
+    <section class="welcome-message">
+        <h1>Chromarium Marketplace</h1>
+        <p>Explorez, achetez, vendez et évaluez des tableaux</p>
+    </section>
+
+    {% if messages %}
+    <div> 
+        <div class="alert"> 
+            {% for message in messages %}
+                {% if 'rate_message' in message.tags %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for painting in paintings %}
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 d-flex flex-column">
+                <a href="{% url 'painting_details' painting.id %}">
+                    <img src="{{ painting.photo.url }}" alt="{{ painting.name }}" class="card-img-top painting-image" style="height:210px; object-fit: cover;">
+                </a>
+                
+                <div class="card-body d-flex flex-column">
+                    <h5>{{ painting.name }}</h5>
+                    <p class="card-text painting-price">{{ painting.price }} DT</p>
+                    <p class="card-text">
+                    {% if painting.average_rating|default:0 == 0 %}
+                        Pas d'évaluation
+                    {% else %}
+                        {{ painting.average_rating|floatformat:1 }}/5
+                        ({{ painting.rating_count }})
+                    {% endif %}
+                    </p>                    
+                    
+                    <div class="star-rating" data-painting-id="{{ painting.id }}">
+                        <div class="stars"></div>
+                        <form action="{% url 'submit_rating' painting.id %}" method="post" class="d-none">
+                            {% csrf_token %}
+                            <input type="hidden" name="painting_id" value="{{ painting.id }}">
+                            <input type="hidden" id="rating-value-{{ painting.id }}" name="rating" value="">
+                        </form>
+                        
+                        <button class="btn btn-outline-danger mt-2" onclick="addToWishlist({{ painting.id }})">
+                            <span class="heart-icon">❤️</span>
+                        </button>
+                    </div>
+                    
+                    
+                    <div class="mt-auto d-flex align-items-center">
+                        {% if painting.user.profile_picture %}
+                        <img src="{{ painting.user.profile_picture.url }}" 
+                            alt="Profile picture of {{ painting.user.username }}" 
+                            class="rounded-circle profile-image"
+                            style="min-width: 40px; min-height: 40px; width: 40px; height: 40px; object-fit: cover; aspect-ratio: 1/1; flex-shrink: 0;">
+                    {% else %}
+                        <img src="{% static 'images/user_client.png' %}" 
+                            alt="Default profile picture" 
+                            class="rounded-circle profile-image"
+                            style="min-width: 40px; min-height: 40px; width: 40px; height: 40px; object-fit: cover; aspect-ratio: 1/1; flex-shrink: 0;">
+                    {% endif %}
+                    <span class="ms-2" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 17px;">
+                        {{ painting.user.username }}
+                    </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-warning text-center mt-4 mb-5" role="alert">
+            Aucune peinture disponible
+        </div>
+        {% endfor %}
+    </div>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block; color: white;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+<style>
+    .star-rating {
+        margin: 10px 0;
+    }
+    .stars {
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .stars div {
+        color: #ddd;
+        font-size: 1.5em;
+        transition: color 0.3s ease;
+    }
+    .stars div.selected {
+        color: gold;
+    }
+    .stars div:hover,
+    .stars div:hover ~ div {
+        color: #ddd;
+    }
+    .stars:hover div {
+        color: gold;
+    }
+    .stars div:hover ~ div {
+        color: #ddd;
+    }
+    .heart-icon {
+        font-size: 1.5em; 
+    }
+    @media (max-width: 600px) {
+        .heart-icon {
+            font-size: 1em; /* Adjust the size as needed */
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.star-rating').forEach(function (rating) {
+            var stars = rating.querySelector('.stars');
+            var form = rating.querySelector('form');
+            var ratingValueInput = form.querySelector('input[name="rating"]');
+
+            for (var i = 1; i <= 5; i++) {
+                var star = document.createElement('div');
+                star.dataset.value = i;
+                star.innerText = '★';
+                star.addEventListener('click', function () {
+                    var value = this.dataset.value;
+                    ratingValueInput.value = value;
+                    updateStars(stars, value);
+                    form.submit();
+                });
+                stars.appendChild(star);
+            }
+
+            function updateStars(starsContainer, value) {
+                starsContainer.querySelectorAll('div').forEach(function (star) {
+                    if (star.dataset.value <= value) {
+                        star.classList.add('selected');
+                    } else {
+                        star.classList.remove('selected');
+                    }
+                });
+            }
+        });
+    });
+
+    function addToWishlist(paintingId) {
+        const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+
+        if (!isAuthenticated) {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        console.log('Adding painting with ID:', paintingId); 
+
+        fetch("{% url 'add_to_wishlist' %}", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ 'painting_id': paintingId })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Peinture ajoutée à votre liste de souhaits !');
+                window.location.reload(); 
+            } else {
+                alert('Erreur lors de l\'ajout à la liste de souhaits.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de l\'ajout à la liste de souhaits.');
+        });
+    }
+</script>
+
+{% endblock %}

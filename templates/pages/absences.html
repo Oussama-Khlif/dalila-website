@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% include 'pages/display_events.html' %}
+
+<section class="welcome-message">
+    <h1>Marquer les Présences</h1>
+    <p>Utilisez cette section pour gérer les absences</p>
+</section>
+
+{% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if profiles %}
+    <h2 style="color:green; font-size:20px;">PROFILS TROUVÉS</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group" style="text-align: center;">
+            <img src="{% static 'images/edit_absence.png' %}" 
+                alt="Alert Image" 
+                style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+            <h2>Marquer Présences</h2>
+        </div>
+
+        {{ formset.management_form }}
+        <input type="hidden" name="date_from" value="{{ form.date_from.value }}">
+        <input type="hidden" name="date_to" value="{{ form.date_to.value }}">
+        <input type="hidden" name="atelier" value="{{ form.atelier.value }}">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Profil</th>
+                    <th>Présent</th>
+                    <th>Absent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile_form in formset %}
+                <tr>
+                    <td>{{ profile_form.profile }}</td>
+                    <td>
+                        <input type="hidden" name="{{ profile_form.prefix }}-is_present" value="False">
+                        {{ profile_form.is_present }}
+                    </td>
+                    <td>
+                        <input type="hidden" name="{{ profile_form.prefix }}-is_absent" value="False">
+                        {{ profile_form.is_absent }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-secondary">Soumettre les Présences</button>
+    </form>
+    <a class="btn btn-secondary" href="{% url 'absences' %}" style="display: inline-block;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+{% else %}
+    <form method="get" class="mb-4" id="markPresenceForm">
+        <div class="form-group" style="text-align: center;">
+            <img src="{% static 'images/search.png' %}" 
+                alt="Alert Image" 
+                style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+            <h2>Recherche Profils</h2>
+        </div>
+
+        {{ form.date_from.label_tag }} {{ form.date_from }}<br>
+        {{ form.date_to.label_tag }} {{ form.date_to }}<br>
+        {{ form.atelier.label_tag }} {{ form.atelier }}<br>    
+        {{ form.groups.label_tag }} {{ form.groups }}<br>
+        <button type="submit" class="btn btn-secondary">Rechercher les Profils</button>
+    </form>
+    <a class="btn btn-secondary" href="{% url 'index' %}" style="display: inline-block;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+{% endif %}
+<script>
+    const markPresenceForm = document.getElementById('markPresenceForm');
+    if (markPresenceForm) {
+        setTimeout(() => {
+            const offset = 100; 
+            const formPosition = markPresenceForm.getBoundingClientRect().top + window.scrollY - offset;
+
+            window.scrollTo({
+                top: formPosition,
+                behavior: 'smooth'
+            });
+        }, 100);
+    }
+
+</script>
+
+{% endblock %}

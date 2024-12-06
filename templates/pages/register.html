@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% include 'pages/messenger_bubble.html' %}
+{% include 'pages/display_events.html' %}
+
+    <section class="welcome-message">
+        <h1>Bienvenue dans Chromarium</h1>
+        <p>Créez votre compte dès aujourd'hui et rejoignez notre communauté ! Remplissez le formulaire ci-dessous pour vous inscrire et commencer à explorer toutes les fonctionnalités.</p>
+    </section>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if verification_code_sent %}
+    <div class="profile-form">
+        <form method="post" action="{% url 'register' %}">  
+            {% csrf_token %}
+            <input type="hidden" name="username" value="{{ username }}">
+            <label for="verification_code">Entrez le code de vérification :</label>
+            <input type="text" name="verification_code" required>
+            <button type="submit">Vérifier</button>
+        </form>
+    </div>
+{% else %}
+    <div class="profile-form">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group" style="text-align: center;">
+                <img id="signupImagePreview"
+                    src="{% static 'images/user_client.png' %}"
+                    alt="Profile Preview" 
+                    style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto; cursor: pointer; border-radius: 50%;" 
+                    onclick="document.getElementById('{{ form.profile_picture.auto_id }}').click()" />
+                <h2>Créer un compte</h2>
+            </div>
+
+            <div class="form-group">
+                {{ form.profile_picture.label_tag }}
+                <div>
+                    {{ form.profile_picture }}
+                </div>
+                <script>
+                    document.getElementById('{{ form.profile_picture.auto_id }}').className = 'form-control';
+                    document.getElementById('{{ form.profile_picture.auto_id }}').setAttribute('onchange', 'previewSignupImage(this)');
+                </script>
+            </div>
+
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {{ form.username.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label_tag }} 
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {{ form.email.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password1.label_tag }}
+                <div class="input-group mb-3">
+                    {{ form.password1 }}
+                    <span class="password-toggle-icon" onclick="togglePassword('id_password1', 'toggleIcon1')">
+                        <i class="bi bi-eye-fill" id="toggleIcon1"></i>
+                    </span>
+                </div>
+                {% if form.password1.errors %}
+                    <div class="text-danger">
+                        {{ form.password1.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password2.label_tag }}
+                <div class="input-group mb-3">
+                    {{ form.password2 }}
+                    <span class="password-toggle-icon" onclick="togglePassword('id_password2', 'toggleIcon2')">
+                        <i class="bi bi-eye-fill" id="toggleIcon2"></i>
+                    </span>
+                </div>
+                {% if form.password2.errors %}
+                    <div class="text-danger">
+                        {{ form.password2.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Créer Compte</button>
+        </form>
+    </div>
+{% endif %}
+
+        <br>
+        <div class="already-have-account">
+            <p>Déjà un compte ? <a href="{% url 'login' %}" class="btn btn-secondary">Connectez-vous</a></p>
+        </div>
+
+    
+    <style>
+        .input-group {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-toggle-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 10;
+            color: #757575;
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle-icon i {
+            font-size: 18px;
+        }
+
+        .password-toggle-icon:hover,
+        .password-toggle-icon:focus,
+        .password-toggle-icon:active {
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        #id_password1, #id_password2 {
+            padding-right: 35px; 
+        }
+    </style>
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye-fill');
+                toggleIcon.classList.add('bi-eye-slash-fill');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash-fill');
+                toggleIcon.classList.add('bi-eye-fill');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const password1Input = document.getElementById('id_password1');
+            const password2Input = document.getElementById('id_password2');
+            password1Input.type = 'password';
+            password2Input.type = 'password';
+        });
+    </script>
+    <script>
+        function previewSignupImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.getElementById('signupImagePreview').src = e.target.result;
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        </script>
+
+{% endblock %}

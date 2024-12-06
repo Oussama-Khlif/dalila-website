@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="welcome-message mb-4">
+    <h1 class="text-center">Modifier le Tableau</h1>
+</section>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group" style="text-align: center;">
+        <img id="paintingImagePreview"
+            src="{% if form.instance.photo %}{{ form.instance.photo.url }}{% else %}{% static 'images/art.png' %}{% endif %}" 
+            alt="Painting Preview" 
+            style="width: 150px; height: 150px; object-fit: cover; margin: 0 auto; cursor: pointer; border-radius:5px;"
+            onclick="document.getElementById('{{ form.photo.auto_id }}').click()" />
+            <br>
+        <h2>Modifier Tableau</h2>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.photo.id_for_label }}" class="form-label">{{ form.photo.label }}</label>
+        <div>
+            {{ form.photo }}
+        </div>
+        {{ form.photo.errors }}
+        <script>
+            document.getElementById('{{ form.photo.auto_id }}').className = 'form-control';
+            document.getElementById('{{ form.photo.auto_id }}').setAttribute('onchange', 'previewPaintingImage(this)');
+        </script>
+    </div>
+
+<script>
+function previewPaintingImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('paintingImagePreview').src = e.target.result;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+        <input type="text" name="name" value="{{ form.name.value|default_if_none:'' }}" class="form-control" required maxlength="25" placeholder="ex. Mon tableau">
+        {{ form.name.errors }}
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.price.id_for_label }}" class="form-label" required>{{ form.price.label }}</label>
+        {{ form.price }}
+        {{ form.price.errors }}
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+        <input type="date" name="date" value="{{ form.date.value}}" class="form-control" required>
+        {{ form.date.errors }}
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.location.id_for_label }}" class="form-label">{{ form.location.label }}</label>
+        <input type="text" name="location" value="{{ form.location.value|default_if_none:'' }}" class="form-control" required maxlength="10" placeholder="ex. Sousse">
+        {{ form.location.errors }}
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.phone_number.id_for_label }}" class="form-label">{{ form.phone_number.label }}</label>
+        <input type="tel" name="phone_number" value="{{ form.phone_number.value|default_if_none:'' }}" class="form-control" required maxlength="15" placeholder="ex. 0123456789">
+        {{ form.phone_number.errors }}
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.height.id_for_label }}" class="form-label">{{ form.height.label }}</label>
+        <div class="input-group">
+            <input type="number" name="height" value="{{ form.height.value|default_if_none:'' }}" class="form-control" required min="0" max="99999" oninput="this.value = Math.max(0, Math.min(99999, this.value))"  placeholder="ex. 220">
+            {{ form.height.errors }}
+            <div class="input-group-append">
+                <span class="input-group-text">cm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.width.id_for_label }}" class="form-label">{{ form.width.label }}</label>
+        <div class="input-group">
+            <input type="number" name="width" value="{{ form.width.value|default_if_none:'' }}" class="form-control" required min="0" max="99999" oninput="this.value = Math.max(0, Math.min(99999, this.value))" placeholder="ex. 300">
+            {{ form.width.errors }}
+            <div class="input-group-append">
+                <span class="input-group-text">cm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="{{ form.technique.id_for_label }}" class="form-label">{{ form.technique.label }}</label>
+        <input type="text" name="technique" value="{{ form.technique.value|default_if_none:'' }}" class="form-control" maxlength="50" placeholder="ex. Huile sur toile">
+        {{ form.technique.errors }}
+    </div>
+
+    <div class="text-center mb-4">
+        <button type="submit" class="btn btn-secondary">Enregistrer les modifications</button>
+    </div>
+</form>
+<br>
+    <div class="text-center">
+        <a class="btn btn-secondary" href="{% url 'mypaintings' %}" style="display: inline-flex; align-items: center;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+    
+
+{% endblock %}
+
+
+
+
+
+
+
+

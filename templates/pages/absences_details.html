@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    @media (max-width: 576px) {
+        .btn-danger {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div>
+    <section class="welcome-message">
+        <h1 style="font-size:25px;">Historique de présences</h1>
+    </section>
+    <div class="form-group" style="text-align: center;">
+        <img src="{% static 'images/history.png' %}"
+            alt="Alert Image" 
+            style="width: 80px; height: 80px; object-fit: cover; margin: 0 auto;" />
+        </div>
+    <p>{{ profile.name }} {{ profile.last_name }}</p>
+    <p>Matricule : {{ form.initial.matricule }}</p>
+    {% if profile.role != 'teacher' %}
+    <p>Type d'inscription : {{ profile.registration_type }}</p>
+    {% endif %}
+
+    <div class="table-responsive" style="padding:10px;">
+        <table class="table table-secondary">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Séance</th>
+                    <th>Atelier</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for absence in absences %}
+                    <tr id="absence-{{ absence.id }}">
+                        <td>
+                            <span style="font-size: 1em;"><strong>{{ absence.date_from|date:"d F Y" }}</strong></span><br>
+                            <span style="font-size: 0.8em;">(<strong>{{ absence.date_from|date:"H:i" }}</strong> &rarr; <strong>{{ absence.date_to|date:"H:i" }}</strong>)</span>
+                        </td>
+                        <td>{{ absence.atelier.name }}</td>
+                        <td>{{ absence.is_present|yesno:"Présent,Absent" }}</td>
+                        <td>
+                                <a href="{% url 'edit_absence' absence.id %}" class="btn btn-danger btn-sm" style="text-align: center; background-color: grey; border-color: grey;">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-danger btn-sm" style="text-align: center;" onclick="deleteAbsence({{ absence.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">Aucune absence trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{% url 'profile_details' profile.matricule %}" class="btn btn-secondary" style="width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+<script>
+function deleteAbsence(absenceId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette absence ?')) {
+        fetch("{% url 'absences_details' profile.matricule %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ absence_id: absenceId, delete_absence: true })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('absence-' + absenceId).remove();
+                alert("L'absence a été supprimée avec succès.");
+            } else {
+                alert("Erreur lors de la suppression de l'absence : " + data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert("Erreur lors de la suppression de l'absence.");
+        });
+    }
+}
+</script>
+
+{% endblock content %}
